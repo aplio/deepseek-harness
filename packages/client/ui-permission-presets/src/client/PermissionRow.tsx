@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react'
 import type { SnapshotStore } from '@deepseek-ai/dsh-client-store'
 import type { InjectFace, PropsLocale, PropsRuntime } from '@deepseek-ai/dsh-client-ui-slots'
 import {
-  IconChevronDownOutline14, Menu, RiskConfirmation,
+  IconChevronDownOutline14, Menu, RiskConfirmation, acknowledgeRisk, isRiskAcknowledged,
 } from '@deepseek-ai/dsh-client-ui-primitives'
 import type { PermissionSettingsState } from './settings-store.ts'
 import type { PermissionSettingsKey } from './locales.ts'
@@ -79,6 +79,11 @@ export function PermissionRow({ load, select, usePermission, t }: PermissionRowP
             setOpen(false)
             if (id === state.currentValue) return
             if (id === FULL_ACCESS_PRESET) {
+              // One accepted warning per browser: later switches apply directly.
+              if (isRiskAcknowledged(FULL_ACCESS_PRESET)) {
+                void select(id)
+                return
+              }
               setAcknowledged(false)
               setConfirmingFullAccess(true)
               return
@@ -118,6 +123,7 @@ export function PermissionRow({ load, select, usePermission, t }: PermissionRowP
           setConfirmingFullAccess(false)
         }}
         onConfirm={() => {
+          acknowledgeRisk(FULL_ACCESS_PRESET)
           setAcknowledged(false)
           setConfirmingFullAccess(false)
           void select(FULL_ACCESS_PRESET)

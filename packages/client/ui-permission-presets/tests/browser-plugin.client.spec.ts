@@ -211,6 +211,7 @@ describe('ui-permission browser plugin', () => {
       acknowledgeLabel: 'I understand the risks and want to continue',
       cancelLabel: 'Cancel',
       confirmLabel: 'Enable Full access',
+      acknowledgementKey: 'danger-full-access',
     })
     expect(again.find(option => option.id === 'auto')).toMatchObject({
       badge: 'EXP',
@@ -231,6 +232,7 @@ describe('ui-permission browser plugin', () => {
       acknowledgeLabel: '我已了解风险，并愿意继续',
       cancelLabel: '取消',
       confirmLabel: '启用完全权限',
+      acknowledgementKey: 'danger-full-access',
     })
     b.setCatalog({ options: [
       { value: 'workspace-write', name: 'Project Files' },

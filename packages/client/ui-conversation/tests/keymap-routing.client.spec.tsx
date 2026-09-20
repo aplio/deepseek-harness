@@ -44,7 +44,7 @@ describe('keymap keydown routing', () => {
     expect(second.hasAttribute('data-composer-composing')).toBe(false)
   })
 
-  it('routes Enter to the keymap submit handler', () => {
+  it('routes the Cmd/Ctrl+Enter chord to the keymap submit handler and leaves Enter native', () => {
     const editor = createEditor({ namespace: 'keymap-routing', onError: (e) => { throw e } })
     const root = document.createElement('div')
     root.contentEditable = 'true'
@@ -61,10 +61,12 @@ describe('keymap keydown routing', () => {
       intakeFiles: () => {},
       pasteText: () => {},
     })
-    fireEvent.keyDown(root, { key: 'Enter' })
-    expect(submit).toHaveBeenCalledWith(false)
+    expect(fireEvent.keyDown(root, { key: 'Enter' })).toBe(true) // native line break
+    expect(submit).not.toHaveBeenCalled()
     fireEvent.keyDown(root, { key: 'Enter', metaKey: true })
-    expect(submit).toHaveBeenCalledWith(true)
+    expect(submit).toHaveBeenCalledWith()
+    fireEvent.keyDown(root, { key: 'Enter', ctrlKey: true })
+    expect(submit).toHaveBeenCalledTimes(2)
   })
 
   it('routes Tab through arbitration and passes when unconsumed', () => {

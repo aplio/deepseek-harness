@@ -60,7 +60,7 @@ export const ja: LocaleDictOf<'conversation'> = {
   'context.tools': 'ツール定義',
   'context.messages': '会話メッセージ',
   'settings.enter.title': '実行中の送信動作',
-  'settings.enter.description': 'エージェント実行中に Enter キーと送信ボタンが行う動作。Cmd/Ctrl+Enter ではもう一方の動作',
+  'settings.enter.description': 'Enter は改行。エージェント実行中に送信ボタンと Cmd/Ctrl+Enter が行う動作',
   'settings.enter.queue': 'キュー送信',
   'settings.enter.steer': '割り込み送信',
   'hero.headline': '未知の領域へ',

@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { createSnapshotStore } from '@deepseek-ai/dsh-client-store'
 import { bindSnapshotSelector, makeTranslate } from '@deepseek-ai/dsh-client-test-runtime'
@@ -13,6 +13,7 @@ import type { PermissionCatalogState } from '../src/client/catalog.ts'
 import { accessZh } from '../src/client/locales.ts'
 
 afterEach(cleanup)
+beforeEach(() => { localStorage.removeItem('dsh.risk-acknowledged.danger-full-access') })
 
 const CATALOG: PermissionCatalog = {
   options: [
@@ -134,6 +135,16 @@ describe('PermissionSelect', () => {
     expect(screen.getByRole<HTMLInputElement>('checkbox').checked).toBe(false)
     fireEvent.click(screen.getByRole('checkbox'))
     fireEvent.click(screen.getByRole('button', { name: '启用完全权限' }))
+    expect(select).toHaveBeenCalledExactlyOnceWith('danger-full-access')
+    await act(async () => {})
+  })
+
+  it('switches to Full access without the dialog once the browser acknowledged it', async () => {
+    localStorage.setItem('dsh.risk-acknowledged.danger-full-access', '1')
+    const { select } = setup()
+    fireEvent.click(trigger())
+    fireEvent.click(screen.getByRole('menuitem', { name: '完全权限' }))
+    expect(screen.queryByRole('dialog', { name: '确认启用完全权限？' })).toBeNull()
     expect(select).toHaveBeenCalledExactlyOnceWith('danger-full-access')
     await act(async () => {})
   })

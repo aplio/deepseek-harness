@@ -3,6 +3,7 @@ import type { ReactNode } from 'react'
 import clsx from 'clsx'
 import {
   IconChevronDownOutline14, Menu, RiskConfirmation, SHIELD_OUTLINE_PATH, SHIELD_OUTLINE_STROKE,
+  acknowledgeRisk, isRiskAcknowledged,
 } from '@deepseek-ai/dsh-client-ui-primitives'
 import type { MenuEntry } from '@deepseek-ai/dsh-client-ui-primitives'
 import type {
@@ -149,6 +150,11 @@ export function PermissionSelect({
   const choose = (id: string): void => {
     setOpen(false)
     if (id === selection.currentValue) return
+    // Full access is answered once per browser; Auto review keeps its gate.
+    if (id === FULL_ACCESS && isRiskAcknowledged(FULL_ACCESS)) {
+      submit(id)
+      return
+    }
     if (id === FULL_ACCESS || id === AUTO_REVIEW) {
       setAcknowledged(false)
       setConfirmation(id)
@@ -163,6 +169,7 @@ export function PermissionSelect({
   }
 
   const confirmSelection = (id: string): void => {
+    if (id === FULL_ACCESS) acknowledgeRisk(FULL_ACCESS)
     closeConfirmation()
     submit(id)
   }

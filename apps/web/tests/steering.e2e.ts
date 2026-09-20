@@ -104,7 +104,7 @@ describe('web e2e: mid-turn steering lands durably and visibly', () => {
     const settled = scaffold.whenTurnSettled(MODE === 'record' ? 180_000 : 30_000)
     await page.locator('[data-composer-input][contenteditable="true"]').first().waitFor({ timeout: 10_000 })
     await input.fill(PROMPT)
-    await input.press('Enter')
+    await input.press('Control+Enter')
     await expect.poll(
       () => sessionEvents.some(event => event.type === 'request/context'),
       { timeout: 10_000 },
@@ -114,7 +114,7 @@ describe('web e2e: mid-turn steering lands durably and visibly', () => {
     // atomically moves this exact occurrence into the current turn's steering outbox.
     await page.locator('[data-composer-input][contenteditable="true"]').first().waitFor({ timeout: 10_000 })
     await input.fill(STEER)
-    await input.press('Enter')
+    await input.press('Control+Enter')
     const queuedRow = page.getByRole('listitem').filter({ hasText: STEER })
     await queuedRow.waitFor({ timeout: 10_000 })
     const steerButton = queuedRow.getByRole('button', { name: 'Steer queued message' })
@@ -214,15 +214,23 @@ describe('web e2e: composer shortcut steers directly', () => {
     await scaffold?.close()
   })
 
-  it.skipIf(MODE === 'record')('uses Cmd+Enter without creating a Queue row', async () => {
+  it.skipIf(MODE === 'record')('steers with Cmd+Enter without creating a Queue row', async () => {
     onTestFailed(() => saveFailureShot(page, 'web-e2e-composer-steering'))
     expect(fixtureUserPrompts(await readFile(FIXTURE, 'utf8'))).toEqual([PROMPT, STEER])
+    // The chord is the keyboard's only submit and delivers the busy preference,
+    // so this scenario configures Steer before the running turn starts.
+    await page.getByRole('button', { name: 'Settings', exact: true }).click()
+    const settings = page.getByRole('dialog', { name: 'Settings' })
+    await settings.getByRole('button', { name: 'Queue' }).click()
+    await page.getByRole('menuitem', { name: 'Steer' }).click()
+    await settings.getByRole('button', { name: 'Steer' }).waitFor({ timeout: 10_000 })
+    await page.keyboard.press('Escape')
     const input = page.locator('[data-composer-input]').first()
     await input.waitFor({ timeout: 10_000 })
     const settled = scaffold.whenTurnSettled(30_000)
     await page.locator('[data-composer-input][contenteditable="true"]').first().waitFor({ timeout: 10_000 })
     await input.fill(PROMPT)
-    await input.press('Enter')
+    await input.press('Control+Enter')
     await page.getByRole('button', { name: 'Stop generating' }).waitFor({ timeout: 10_000 })
 
     await page.locator('[data-composer-input][contenteditable="true"]').first().waitFor({ timeout: 10_000 })
@@ -250,7 +258,7 @@ describe('web e2e: composer shortcut steers directly', () => {
   }, 90_000)
 })
 
-describe('web e2e: composer shortcut follows the swapped busy behavior', () => {
+describe('web e2e: composer shortcut follows the busy behavior', () => {
   let scaffold: WebScaffold
   let browser: Browser
   let page: Page
@@ -273,23 +281,16 @@ describe('web e2e: composer shortcut follows the swapped busy behavior', () => {
     await scaffold?.close()
   })
 
-  it.skipIf(MODE === 'record')('queues Cmd+Enter when plain Enter is configured to Steer', async () => {
-    onTestFailed(() => saveFailureShot(page, 'web-e2e-composer-swapped-shortcut'))
-    await page.getByRole('button', { name: 'Settings', exact: true }).click()
-    const dialog = page.getByRole('dialog', { name: 'Settings' })
-    await dialog.getByRole('button', { name: 'Queue' }).click()
-    await page.getByRole('menuitem', { name: 'Steer' }).click()
-    await dialog.getByRole('button', { name: 'Steer' }).waitFor({ timeout: 10_000 })
-    await page.keyboard.press('Escape')
-
+  it.skipIf(MODE === 'record')('queues Cmd+Enter under the default Queue behavior', async () => {
+    onTestFailed(() => saveFailureShot(page, 'web-e2e-composer-queue-shortcut'))
     const input = page.locator('[data-composer-input]').first()
     const settled = scaffold.whenTurnSettled(30_000)
     await page.locator('[data-composer-input][contenteditable="true"]').first().waitFor({ timeout: 10_000 })
     await input.fill(PROMPT)
-    await input.press('Enter')
+    await input.press('Control+Enter')
     await page.getByRole('button', { name: 'Stop generating' }).waitFor({ timeout: 10_000 })
 
-    const queuedText = 'Queued by the complementary Cmd+Enter shortcut.'
+    const queuedText = 'Queued by the Cmd+Enter shortcut.'
     await page.locator('[data-composer-input][contenteditable="true"]').first().waitFor({ timeout: 10_000 })
     await input.fill(queuedText)
     await input.press('Meta+Enter')
@@ -360,13 +361,13 @@ describe('web e2e: empty-draft Cmd+Enter steers the whole queue', () => {
     // question-composer takeover cannot race queue publication or the shortcut.
     await page.locator('[data-composer-input][contenteditable="true"]').first().waitFor({ timeout: 10_000 })
     await input.fill(PROMPT)
-    await input.press('Enter')
+    await input.press('Control+Enter')
     await page.locator('[data-composer-input][contenteditable="true"]').first().waitFor({ timeout: 10_000 })
     await input.fill(STEER_ONE)
-    await input.press('Enter')
+    await input.press('Control+Enter')
     await page.locator('[data-composer-input][contenteditable="true"]').first().waitFor({ timeout: 10_000 })
     await input.fill(STEER_TWO)
-    await input.press('Enter')
+    await input.press('Control+Enter')
     const dock = page.locator('[data-queue-dock]')
     // Both messages queued: the two-row dock shows a collapsed count header,
     // and Playwright text matching skips the hidden rows — expand the list,

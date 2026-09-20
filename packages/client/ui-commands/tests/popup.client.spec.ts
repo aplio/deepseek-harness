@@ -252,6 +252,44 @@ describe('select', () => {
     expect(popup.state.getSnapshot().open).toBe(false)
   })
 
+  it('asks a keyed gate once per browser and settles it directly afterwards', async () => {
+    const store = new Map<string, string>()
+    vi.stubGlobal('localStorage', {
+      getItem: (key: string) => store.get(key) ?? null,
+      setItem: (key: string, value: string) => { store.set(key, value) },
+    })
+    try {
+      const KEYED: SelectOption = {
+        id: 'full',
+        label: 'Full access',
+        confirmation: {
+          title: 'Enable Full access?',
+          description: 'Sensitive operations.',
+          acknowledgeLabel: 'I understand',
+          cancelLabel: 'Cancel',
+          confirmLabel: 'Enable Full access',
+          acknowledgementKey: 'full',
+        },
+      }
+      const onSelect = vi.fn()
+      const first = await readyPopup({ options: () => Promise.resolve([KEYED]), onSelect }, makeDeps())
+      await first.popup.select(0)
+      expect(first.popup.state.getSnapshot().confirming).toBe(KEYED)
+      first.popup.acknowledge(true)
+      await first.popup.confirm()
+      expect(onSelect).toHaveBeenCalledExactlyOnceWith(KEYED, CTX_A)
+      expect(store.get('dsh.risk-acknowledged.full')).toBe('1')
+
+      const again = vi.fn()
+      const second = await readyPopup({ options: () => Promise.resolve([KEYED]), onSelect: again }, makeDeps())
+      await second.popup.select(0)
+      expect(second.popup.state.getSnapshot().confirming).toBeNull()
+      expect(again).toHaveBeenCalledExactlyOnceWith(KEYED, CTX_A)
+    } finally {
+      vi.unstubAllGlobals()
+    }
+  })
+
   it('cancels a confirmation back to the picker without selecting or consuming', async () => {
     const onSelect = vi.fn()
     const deps = makeDeps()

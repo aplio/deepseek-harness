@@ -99,6 +99,9 @@ function optionsOf(
             acknowledgeLabel: t(option.value === AUTO_REVIEW_PRESET ? 'auto.confirm.acknowledge' : 'confirm.acknowledge'),
             cancelLabel: t('confirm.cancel'),
             confirmLabel: t(option.value === AUTO_REVIEW_PRESET ? 'auto.confirm.enable' : 'confirm.enable'),
+            // The Full access warning is answered once per browser; Auto review
+            // keeps asking, since its gate covers a different grant.
+            ...(option.value === FULL_ACCESS_PRESET ? { acknowledgementKey: FULL_ACCESS_PRESET } : {}),
           },
         }
         : {}),

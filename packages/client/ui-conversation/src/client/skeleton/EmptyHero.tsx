@@ -14,6 +14,28 @@ import css from './HeroShell.module.css'
 type HeroTranslate = ConversationContentProps['t']
 
 /**
+ * Browser-scoped first-visit notice: the hero's Preview badge marks the
+ * product as pre-stable, which one visit is enough to learn.
+ */
+const PREVIEW_BADGE_KEY = 'dsh.hero.preview-badge'
+
+/**
+ * Read and claim the badge's one showing in this browser.
+ * @returns whether this render is the browser's first hero, which shows the badge.
+ */
+function claimPreviewBadge(): boolean {
+  try {
+    if (localStorage.getItem(PREVIEW_BADGE_KEY) !== null) return false
+    localStorage.setItem(PREVIEW_BADGE_KEY, '1')
+    return true
+  } catch {
+    // Blocked storage cannot remember the claim; a notice repeated on every
+    // visit is worse than omitting it.
+    return false
+  }
+}
+
+/**
  * Basename label for the workspace chip (the shared derivation);
  * separator-only paths echo the raw cwd.
  * @param cwd - workspace directory path (non-empty).
@@ -131,6 +153,7 @@ function HeroFish({ hovering }: { hovering: boolean }) {
  */
 export function HeroShell({ t, renderSlot, children }: HeroShellProps) {
   const [hovering, setHovering] = useState(false)
+  const [previewBadge] = useState(claimPreviewBadge)
   return (
     <div className={css.root}>
       <div className={css.stack}>
@@ -152,7 +175,7 @@ export function HeroShell({ t, renderSlot, children }: HeroShellProps) {
           <span className={css.titleGroup}>
             {/* Own element: keeps the headline text addressable apart from the badge. */}
             <span>{t('hero.headline')}</span>
-            <span className={css.previewBadge}>{t('hero.preview')}</span>
+            {previewBadge && <span className={css.previewBadge}>{t('hero.preview')}</span>}
           </span>
         </div>
         <div className={css.body}>

@@ -102,13 +102,20 @@ export function apply(ctx: Context): void {
     subscribe: listener => ctx.on('connection/reset', listener),
   }
   const pickerFlowSource = flowSource('conversation.hero.workspace.directoryFlow')
+  // Picking a row is the sidebar's own gesture: on a narrow frame the browser
+  // also dismisses the sidebar it was picked from, while a selection restored
+  // at boot leaves the shell as the user left it.
   const openSession: WorkspaceBrowserInjected['open'] = (sessionId) => {
     uiWorkspace.openSession(sessionId)
+    ctx.layout.collapseSidebar()
   }
   const browserInjected = (): WorkspaceBrowserInjected => ({
     // Explicit group actions keep their target; unscoped New Session inherits
     // the current Session Workspace before the recent-Workspace fallback.
-    startSession: (workspaceId) => { uiWorkspace.startSession(workspaceId) },
+    startSession: (workspaceId) => {
+      uiWorkspace.startSession(workspaceId)
+      ctx.layout.collapseSidebar()
+    },
     open: openSession,
     searchSessions,
     searchResultLimit: sessions.searchResultLimit,

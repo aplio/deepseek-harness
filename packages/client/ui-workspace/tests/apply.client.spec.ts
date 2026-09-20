@@ -20,7 +20,7 @@ async function bench() {
   }))
   const rename = vi.fn(async () => ({}))
   const selectPanel = vi.fn()
-  ctx.provide('layout', { selectPanel, beginNavigation: () => new AbortController().signal })
+  ctx.provide('layout', { selectPanel, collapseSidebar: vi.fn(), beginNavigation: () => new AbortController().signal })
   const search = vi.fn(async () => ({
     ok: true as const,
     value: { items: [{ sessionId: 'session' as never, snippet: 'match' }], hasMore: false },
@@ -135,15 +135,20 @@ describe('ui-workspace apply', () => {
     declare(b.slots, 'sidebar.workspaces', 'conversation.hero.workspace')
     await b.ctx.plugin({ inject: [...inject], apply }).await()
     const startSession = vi.spyOn(b.ctx.uiWorkspace, 'startSession').mockImplementation(() => undefined)
+    const collapseSidebar = vi.spyOn(b.ctx.layout, 'collapseSidebar')
 
     const browser = (b.slots.entries('sidebar.workspaces')[0]!.inject as () => WorkspaceBrowserInjected)()
-    // Both arms delegate to the shared Session navigation action.
+    // Both arms delegate to the shared Session navigation action, and both
+    // dismiss the narrow frame's sidebar because the gesture came from it.
     browser.startSession('ws' as never)
     expect(startSession).toHaveBeenCalledWith('ws')
+    expect(collapseSidebar).toHaveBeenCalledTimes(1)
     browser.startSession()
     expect(startSession).toHaveBeenLastCalledWith(undefined)
+    expect(collapseSidebar).toHaveBeenCalledTimes(2)
     browser.open('session' as never)
     expect(b.retain).toHaveBeenCalledWith('session', { source: 'mainView' })
+    expect(collapseSidebar).toHaveBeenCalledTimes(3)
     const signal = new AbortController().signal
     await expect(browser.searchSessions('match', signal)).resolves.toEqual({
       items: [{ sessionId: 'session', snippet: 'match' }],

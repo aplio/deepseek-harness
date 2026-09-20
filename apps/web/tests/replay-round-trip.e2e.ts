@@ -87,7 +87,7 @@ describe('web e2e: fresh round trip through the real assembly', () => {
     await input.fill(PROMPT)
     const echoSnapshot = await input.evaluate(async (element, prompt) => {
       element.dispatchEvent(new KeyboardEvent('keydown', {
-        key: 'Enter', code: 'Enter', bubbles: true, cancelable: true,
+        key: 'Enter', code: 'Enter', ctrlKey: true, bubbles: true, cancelable: true,
       }))
       // sendSession registered its paint yield first. This frame observes the
       // committed echo while admission remains queued on the following task.

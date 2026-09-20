@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import type { GlobalStandardProps } from '@deepseek-ai/dsh-client-ui-slots'
 import { Context } from '@deepseek-ai/cordis'
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { bindSnapshotSelector, RemoteError } from '@deepseek-ai/dsh-client-test-runtime'
 import type { SettingsNamespaceView } from '@deepseek-ai/dsh-api-remotes/client'
@@ -24,6 +24,7 @@ function derivedController(remote: { settings: object }) {
 }
 
 afterEach(cleanup)
+beforeEach(() => { localStorage.removeItem('dsh.risk-acknowledged.danger-full-access') })
 
 const SCHEMA = {
   uid: 5,
@@ -128,6 +129,37 @@ describe('PermissionRow', () => {
     fireEvent.click(enable)
     await waitFor(() => { expect(mutate).toHaveBeenCalledOnce() })
     expect(dialog.isConnected).toBe(false)
+  })
+
+  it('remembers the acknowledged full-access warning for the browser', async () => {
+    const mutate = vi.fn(() => Promise.resolve(ok(view('danger-full-access', 1))))
+    const controller = derivedController({
+      settings: {
+        describe: () => Promise.resolve(ok({ writable: true, hasDocument: false, namespaces: [view('read-only')] })),
+        mutate,
+      },
+    })
+    const first = mount(controller)
+    fireEvent.click(await screen.findByRole('button', { name: '仅可查看' }))
+    fireEvent.click(screen.getByRole('menuitem', { name: '完全权限' }))
+    fireEvent.click(screen.getByRole('checkbox'))
+    fireEvent.click(screen.getByRole('button', { name: '启用完全权限' }))
+    await waitFor(() => { expect(mutate).toHaveBeenCalledOnce() })
+    expect(localStorage.getItem('dsh.risk-acknowledged.danger-full-access')).toBe('1')
+    first.unmount()
+
+    // The next visit in this browser switches without the dialog.
+    const again = vi.fn(() => Promise.resolve(ok(view('danger-full-access', 2))))
+    mount(derivedController({
+      settings: {
+        describe: () => Promise.resolve(ok({ writable: true, hasDocument: false, namespaces: [view('read-only')] })),
+        mutate: again,
+      },
+    }))
+    fireEvent.click(await screen.findByRole('button', { name: '仅可查看' }))
+    fireEvent.click(screen.getByRole('menuitem', { name: '完全权限' }))
+    expect(screen.queryByRole('dialog', { name: '确认启用完全权限？' })).toBeNull()
+    await waitFor(() => { expect(again).toHaveBeenCalledOnce() })
   })
 
   it('hides an unavailable namespace and disables a read-only provider', async () => {

@@ -48,6 +48,7 @@ Check this table before writing a control in a feature package. A plugin cannot 
 | `DisclosureRow` | 24px compact disclosure that lays title and content side by side. |
 | `Modal` | Centered dialog over a page mask. |
 | `RiskConfirmation` | Sensitive action gated behind an explicit checkbox. |
+| `isRiskAcknowledged`, `acknowledgeRisk` | Browser-scoped memory for a risk gate the user answers once per browser; blocked storage reads as unacknowledged. |
 | `OnboardingSurface` | First-run stage that holds the application root inert. |
 | `Tooltip` | Hover text on a cloned anchor, placed right, bottom, or top. |
 | `HoverCard` | Hover preview the pointer can rest on and select from; optional copy button. |

@@ -13,6 +13,10 @@
   height: 100%;
   padding: 6px var(--dsh-sidebar-inline-padding);
   box-sizing: border-box;
+  /* Touch: `manipulation` keeps list panning and pinch zoom and reserves the
+     double-tap gesture for the controls in this column instead of browser
+     zoom, which raced the second tap a narrow frame used to dismiss it. */
+  touch-action: manipulation;
   background: var(--dsw-specific-sidebar-fill);
   color: var(--dsw-alias-label-primary);
   font-size: 14px;

@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
-// InputBar behavior over the editor + submit-machine wiring: Enter-send
-// semantics (IME guard, Shift newline, busy Enter policy, Ctrl/Meta steering,
-// repeat suppression), running semantics (input stays free; continuable
+// InputBar behavior over the editor + submit-machine wiring: submit-chord
+// semantics (IME guard, Enter/Shift newline, busy Send policy, Ctrl/Meta
+// steering, repeat suppression), running semantics (input stays free; continuable
 // children keep Send beside Stop), the machine pending lock, chip decorators,
 // error banners, status strips, and the focus-keeping mousedown. Keyboard
 // gestures dispatch real KeyboardEvents at the contenteditable (the Lexical
@@ -295,7 +295,7 @@ describe('composer placeholder visibility', () => {
     writeDraft(shell, draft)
     expect(placeholder()).toBeNull()
     expect(button.disabled).toBe(true)
-    fireEvent.keyDown(textarea, { key: 'Enter', keyCode: 13 })
+    fireEvent.keyDown(textarea, { key: 'Enter', metaKey: true, keyCode: 13 })
     await act(async () => {})
     expect(sink).not.toHaveBeenCalled()
     fireEvent.blur(textarea)
@@ -476,7 +476,7 @@ describe('image draft rail', () => {
     expect(removeAttachment).toHaveBeenCalledWith('draft-2')
     let settle!: (outcome: SubmitOutcome) => void
     sink.mockImplementationOnce(() => new Promise<SubmitOutcome>((resolve) => { settle = resolve }))
-    fireEvent.keyDown(textarea, { key: 'Enter' })
+    fireEvent.keyDown(textarea, { key: 'Enter', metaKey: true })
     expect(sink).toHaveBeenCalledWith('', ['draft-1'], 'queue', expect.any(AbortSignal))
     // Optimistic commit: the rail clears at submit, before the admission settles.
     expect(attachmentOwner(result.slotCalls).attachments).toEqual([])
@@ -493,7 +493,7 @@ describe('image draft rail', () => {
     const { textarea, sink } = result
     let fail!: (outcome: SubmitOutcome) => void
     sink.mockImplementationOnce(() => new Promise<SubmitOutcome>((resolve) => { fail = resolve }))
-    fireEvent.keyDown(textarea, { key: 'Enter' })
+    fireEvent.keyDown(textarea, { key: 'Enter', metaKey: true })
     expect(attachmentOwner(result.slotCalls).attachments).toEqual([])
     await act(async () => { fail({ kind: 'error', text: '图片发送失败' }) })
     await vi.waitFor(() => {
@@ -591,23 +591,26 @@ describe('Enter semantics', () => {
     expect(sink).not.toHaveBeenCalled()
   })
 
-  it('plain Enter submits queue mode through the machine; repeat and empty are suppressed', () => {
+  it('the Cmd/Ctrl+Enter chord submits through the machine; plain Enter and repeat are suppressed', () => {
     const { textarea, sink } = bench({ draft: 'hello' })
     fireEvent.keyDown(textarea, { key: 'Enter' })
+    expect(sink).not.toHaveBeenCalled()
+    fireEvent.keyDown(textarea, { key: 'Enter', metaKey: true })
     expect(sink).toHaveBeenCalledWith('hello', [], 'queue', expect.any(AbortSignal))
     // The submitting-phase lock, not draft emptiness, suppresses the repeat:
     // the draft is still uncleared while the sink round-trip is in flight.
-    fireEvent.keyDown(textarea, { key: 'Enter', repeat: true })
-    fireEvent.keyDown(textarea, { key: 'Enter' })
+    fireEvent.keyDown(textarea, { key: 'Enter', metaKey: true, repeat: true })
+    fireEvent.keyDown(textarea, { key: 'Enter', metaKey: true })
     expect(sink).toHaveBeenCalledTimes(1)
     const empty = bench({ draft: '   ' })
-    fireEvent.keyDown(empty.textarea, { key: 'Enter' })
+    fireEvent.keyDown(empty.textarea, { key: 'Enter', metaKey: true })
     expect(empty.sink).not.toHaveBeenCalled()
   })
 
-  it('non-Enter keys and Shift+Enter fall through to native behavior', () => {
+  it('non-Enter keys, plain Enter, and Shift+Enter fall through to native behavior', () => {
     const { textarea, sink } = bench({ draft: 'hello' })
     fireEvent.keyDown(textarea, { key: 'a' })
+    fireEvent.keyDown(textarea, { key: 'Enter' })
     fireEvent.keyDown(textarea, { key: 'Enter', shiftKey: true })
     expect(sink).not.toHaveBeenCalled()
   })
@@ -619,16 +622,16 @@ describe('Enter semantics', () => {
     expect(sink).not.toHaveBeenCalled() // and not preventDefault'd: native newline
   })
 
-  it('Ctrl/Meta+Enter sends normally while idle and steers while running', () => {
+  it('Ctrl/Meta+Enter sends normally while idle and follows the busy preference while running', () => {
     const idle = bench({ draft: 'hello' })
     fireEvent.keyDown(idle.textarea, { key: 'Enter', metaKey: true })
     expect(idle.sink).toHaveBeenCalledWith('hello', [], 'queue', expect.any(AbortSignal))
 
-    const busyCtrl = bench({ running: true, draft: 'steer with ctrl' })
+    const busyCtrl = bench({ running: true, draft: 'queue with ctrl' })
     fireEvent.keyDown(busyCtrl.textarea, { key: 'Enter', ctrlKey: true })
-    expect(busyCtrl.sink).toHaveBeenCalledWith('steer with ctrl', [], 'steer', expect.any(AbortSignal))
+    expect(busyCtrl.sink).toHaveBeenCalledWith('queue with ctrl', [], 'queue', expect.any(AbortSignal))
 
-    const busyMeta = bench({ running: true, draft: 'steer with cmd' })
+    const busyMeta = bench({ running: true, busyEnter: 'steer', draft: 'steer with cmd' })
     fireEvent.keyDown(busyMeta.textarea, { key: 'Enter', metaKey: true })
     expect(busyMeta.sink).toHaveBeenCalledWith('steer with cmd', [], 'steer', expect.any(AbortSignal))
   })
@@ -654,7 +657,7 @@ describe('Enter semantics', () => {
     expect(idle.steerQueue).not.toHaveBeenCalled()
     expect(idle.sink).not.toHaveBeenCalled()
 
-    // Plain Enter never steers the queue, even under the busy Steer preference.
+    // Plain Enter neither submits nor steers, even under the busy Steer preference.
     const plain = bench({ running: true, busyEnter: 'steer', queue: [row('q-1')], steerQueue: vi.fn() })
     fireEvent.keyDown(plain.textarea, { key: 'Enter' })
     expect(plain.steerQueue).not.toHaveBeenCalled()
@@ -692,11 +695,11 @@ describe('Enter semantics', () => {
     expect(steering.sink).not.toHaveBeenCalled()
   })
 
-  it('draft content outranks the queue: accelerated Enter steers the draft only', () => {
+  it('draft content outranks the queue: the chord submits the draft, never the flush', () => {
     const steerQueue = vi.fn()
     const { textarea, sink } = bench({ running: true, queue: [row('q-1')], draft: '插话', steerQueue })
     fireEvent.keyDown(textarea, { key: 'Enter', ctrlKey: true })
-    expect(sink).toHaveBeenCalledWith('插话', [], 'steer', expect.any(AbortSignal))
+    expect(sink).toHaveBeenCalledWith('插话', [], 'queue', expect.any(AbortSignal))
     expect(steerQueue).not.toHaveBeenCalled()
   })
 
@@ -776,21 +779,21 @@ describe('Enter semantics', () => {
     expect(shell.snapshot.draft).toBe('hxello')
   })
 
-  it('composition Enter never sends: ref guard, isComposing, and keyCode 229 paths', () => {
+  it('the submit chord never fires during composition: ref guard, isComposing, and keyCode 229 paths', () => {
     vi.useFakeTimers()
     try {
       const { textarea, sink } = bench({ draft: 'hello' })
       fireEvent.compositionStart(textarea)
-      fireEvent.keyDown(textarea, { key: 'Enter' })
+      fireEvent.keyDown(textarea, { key: 'Enter', metaKey: true })
       expect(sink).not.toHaveBeenCalled()
       fireEvent.compositionEnd(textarea)
       // Safari delivers the closing keydown before the deferred clear.
-      fireEvent.keyDown(textarea, { key: 'Enter' })
+      fireEvent.keyDown(textarea, { key: 'Enter', metaKey: true })
       expect(sink).not.toHaveBeenCalled()
       vi.advanceTimersByTime(20)
-      fireEvent.keyDown(textarea, { key: 'Enter', keyCode: 229 })
+      fireEvent.keyDown(textarea, { key: 'Enter', metaKey: true, keyCode: 229 })
       expect(sink).not.toHaveBeenCalled()
-      fireEvent.keyDown(textarea, { key: 'Enter' })
+      fireEvent.keyDown(textarea, { key: 'Enter', metaKey: true })
       expect(sink).toHaveBeenCalledTimes(1)
     } finally {
       vi.useRealTimers()
@@ -935,20 +938,18 @@ describe('running and lock semantics', () => {
     expect(sink).not.toHaveBeenCalled()
   })
 
-  it('running plain Enter follows the busy-state Steer preference', () => {
-    const { textarea, sink } = bench({ running: true, busyEnter: 'steer', draft: '直接插话' })
-    fireEvent.keyDown(textarea, { key: 'Enter' })
-    expect(sink).toHaveBeenCalledWith('直接插话', [], 'steer', expect.any(AbortSignal))
-  })
+  it('running Cmd/Ctrl+Enter is the only keyboard submit and follows the busy-state preference', () => {
+    const plain = bench({ running: true, busyEnter: 'steer', draft: '只换行' })
+    fireEvent.keyDown(plain.textarea, { key: 'Enter' })
+    expect(plain.sink).not.toHaveBeenCalled()
 
-  it('running Cmd/Ctrl+Enter uses the opposite of the busy-state Enter preference', () => {
-    const meta = bench({ running: true, busyEnter: 'steer', draft: '排到下一轮' })
+    const meta = bench({ running: true, busyEnter: 'steer', draft: '直接插话' })
     fireEvent.keyDown(meta.textarea, { key: 'Enter', metaKey: true })
-    expect(meta.sink).toHaveBeenCalledWith('排到下一轮', [], 'queue', expect.any(AbortSignal))
+    expect(meta.sink).toHaveBeenCalledWith('直接插话', [], 'steer', expect.any(AbortSignal))
 
-    const ctrl = bench({ running: true, busyEnter: 'steer', draft: 'also queue' })
+    const ctrl = bench({ running: true, draft: '排到下一轮' })
     fireEvent.keyDown(ctrl.textarea, { key: 'Enter', ctrlKey: true })
-    expect(ctrl.sink).toHaveBeenCalledWith('also queue', [], 'queue', expect.any(AbortSignal))
+    expect(ctrl.sink).toHaveBeenCalledWith('排到下一轮', [], 'queue', expect.any(AbortSignal))
   })
 
   it('running continuable subagent keeps Send beside an independent Stop', () => {
@@ -1085,7 +1086,7 @@ describe('running and lock semantics', () => {
     expect(stop).not.toHaveBeenCalled()
   })
 
-  it('applies the ordinary Queue/Steer preference to a running continuable child', () => {
+  it('applies the busy preference to the Send button and the chord on a running continuable child', () => {
     const subagent = {
       address: {
         parentSessionId: 'parent' as SessionId,
@@ -1094,17 +1095,17 @@ describe('running and lock semantics', () => {
       },
       parentAvailable: true,
     }
-    const plain = bench({ running: true, busyEnter: 'steer', draft: 'plain', subagent })
-    fireEvent.keyDown(plain.textarea, { key: 'Enter' })
-    expect(plain.sink).toHaveBeenCalledWith('plain', [], 'steer', expect.any(AbortSignal))
+    const primary = bench({ running: true, busyEnter: 'steer', draft: 'plain', subagent })
+    fireEvent.click(primary.button)
+    expect(primary.sink).toHaveBeenCalledWith('plain', [], 'steer', expect.any(AbortSignal))
 
-    const accelerated = bench({ running: true, draft: 'accelerated', subagent })
-    fireEvent.keyDown(accelerated.textarea, { key: 'Enter', metaKey: true })
-    expect(accelerated.sink).toHaveBeenCalledWith('accelerated', [], 'steer', expect.any(AbortSignal))
+    const chord = bench({ running: true, draft: 'accelerated', subagent })
+    fireEvent.keyDown(chord.textarea, { key: 'Enter', metaKey: true })
+    expect(chord.sink).toHaveBeenCalledWith('accelerated', [], 'queue', expect.any(AbortSignal))
 
-    const opposite = bench({ running: true, busyEnter: 'steer', draft: 'opposite', subagent })
-    fireEvent.keyDown(opposite.textarea, { key: 'Enter', metaKey: true })
-    expect(opposite.sink).toHaveBeenCalledWith('opposite', [], 'queue', expect.any(AbortSignal))
+    const steered = bench({ running: true, busyEnter: 'steer', draft: 'opposite', subagent })
+    fireEvent.keyDown(steered.textarea, { key: 'Enter', metaKey: true })
+    expect(steered.sink).toHaveBeenCalledWith('opposite', [], 'steer', expect.any(AbortSignal))
   })
 
   it('disabled (session removed) locks the textarea and chrome', () => {

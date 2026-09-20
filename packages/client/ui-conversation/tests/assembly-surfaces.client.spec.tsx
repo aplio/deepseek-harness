@@ -120,7 +120,7 @@ describe('resident composer', () => {
     expect(view.getByTestId('workspace-probe').textContent).toBe('true:0')
     expect(textarea!.getAttribute('aria-expanded')).toBe('true')
     fireEvent.click(view.getByRole('button', { name: '选择工作区' }))
-    fireEvent.keyDown(textarea!, { key: 'Enter' })
+    fireEvent.keyDown(textarea!, { key: 'Enter', metaKey: true })
     expect(view.getByTestId('workspace-probe').textContent).toBe('true:0')
     expect(view.getByRole('button', { name: '选择工作区' })).toBeTruthy()
     await runtime.dispose()
@@ -220,7 +220,7 @@ describe('prompt rejection through the assembled composer', () => {
     const conversation = runtime.ctx.get('conversation') as { input: unknown }
     const shell = (conversation.input as InputHub).shell(SID)
     act(() => { shell.setDraft('do not lose this') })
-    fireEvent.keyDown(composer, { key: 'Enter' })
+    fireEvent.keyDown(composer, { key: 'Enter', metaKey: true })
     await waitFor(() => { expect(prompt).toHaveBeenCalledOnce() })
 
     await runtime.sessions.updateSessionSnapshot(SID, (draft) => {

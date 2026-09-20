@@ -63,6 +63,20 @@ describe('createLayoutStore', () => {
     expect(store.getSnapshot().layoutInfo).toMatchObject({ sidebar: 400, narrowExpanded: false })
   })
 
+  it('drops the narrow expansion override when navigation closes the sidebar', () => {
+    const { store, actions } = createLayoutStore().create()
+    actions.setSidebar(400)
+    actions.setViewportWidth(980)
+    actions.toggleSidebar()
+    expect(store.getSnapshot().layoutInfo).toMatchObject({ sidebar: 400, narrowExpanded: true })
+    actions.collapseSidebar()
+    expect(store.getSnapshot().layoutInfo).toMatchObject({ sidebar: 400, narrowExpanded: false })
+    // A wide frame keeps its open preference: only the override is cleared.
+    actions.setViewportWidth(1440)
+    actions.collapseSidebar()
+    expect(store.getSnapshot().layoutInfo.sidebar).toBe(400)
+  })
+
   it('clears the manual override only when crossing 1024px', () => {
     const { store, actions } = createLayoutStore().create()
     actions.setViewportWidth(980)

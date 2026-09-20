@@ -11,6 +11,7 @@
  */
 import { createSnapshotStore } from '@deepseek-ai/dsh-client-store'
 import type { SnapshotStore } from '@deepseek-ai/dsh-client-store'
+import { acknowledgeRisk, isRiskAcknowledged } from '@deepseek-ai/dsh-client-ui-primitives'
 import type { TokenSpan } from '@deepseek-ai/dsh-client-ui-input-trigger/client'
 import type { SelectOption } from './contract.ts'
 
@@ -239,8 +240,13 @@ export class PopupSelectController<TCtx = unknown> {
     const option = filterOptions(s.options, s.search)[index]
     if (option === undefined) return
     if (option.confirmation !== undefined) {
-      this.state.set({ ...s, confirming: option, acknowledged: false, error: null })
-      return
+      const key = option.confirmation.acknowledgementKey
+      // A gate this browser already accepted settles straight away; the
+      // acknowledgement is the user's standing answer for the same risk.
+      if (key === undefined || !isRiskAcknowledged(key)) {
+        this.state.set({ ...s, confirming: option, acknowledged: false, error: null })
+        return
+      }
     }
     await this.settle(binding, option)
   }
@@ -267,6 +273,8 @@ export class PopupSelectController<TCtx = unknown> {
     const binding = this.binding
     const s = this.state.getSnapshot()
     if (binding === null || !s.open || s.submitting || s.confirming === null || !s.acknowledged) return
+    const key = s.confirming.confirmation?.acknowledgementKey
+    if (key !== undefined) acknowledgeRisk(key)
     await this.settle(binding, s.confirming)
   }
 

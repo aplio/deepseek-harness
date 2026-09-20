@@ -31,7 +31,7 @@ async function bench(declare = true) {
   await owner.await()
   if (ctx === undefined) throw new Error('the sidebar fixture owner did not activate')
   await ctx.plugin(SlotRegistry).await()
-  const layout = { toggleSidebar: vi.fn(), selectPanel: vi.fn() }
+  const layout = { toggleSidebar: vi.fn(), selectPanel: vi.fn(), collapseSidebar: vi.fn() }
   const uiWorkspace = { startSession: vi.fn() }
   ctx.provide('layout', layout)
   ctx.provide('uiWorkspace', uiWorkspace as never)
@@ -81,11 +81,14 @@ describe('ui-sidebar apply', () => {
     expect(Object.keys(injected)).toEqual(['startSession', 'toggleSidebar', 'selectPanel', 'hooks'])
     expect(injected.hooks.panels.getSnapshot()).toEqual([])
     expect(b.slots.entries('main')).toEqual([])
-    // Both arms delegate to the Workspace UI's shared New Session action.
+    // Both arms delegate to the Workspace UI's shared New Session action, and
+    // the gesture came from the sidebar, so it also dismisses the narrow overlay.
     injected.startSession('workspace' as never)
     expect(b.uiWorkspace.startSession).toHaveBeenCalledWith('workspace')
+    expect(b.layout.collapseSidebar).toHaveBeenCalledTimes(1)
     injected.startSession()
     expect(b.uiWorkspace.startSession).toHaveBeenLastCalledWith(undefined)
+    expect(b.layout.collapseSidebar).toHaveBeenCalledTimes(2)
     injected.toggleSidebar()
     expect(b.layout.toggleSidebar).toHaveBeenCalledOnce()
     const panelId = 'custom-panel' as MainPanelId

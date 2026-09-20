@@ -40,6 +40,12 @@ export interface ILayout {
   /** Toggle the sidebar panel (closed ⟷ contract default width). */
   toggleSidebar(): void
   /**
+   * Close the narrow frame's sidebar overlay without touching the wide
+   * preference. The navigation that picked a Session also dismisses the list it
+   * was picked from, so one tap both switches and reveals the conversation.
+   */
+  collapseSidebar(): void
+  /**
    * Report the right panel's presentation without changing its expanded state.
    * @param track - whether the normal panel width reserves a grid track,
    *   including beneath a fullscreen overlay.
@@ -88,6 +94,11 @@ export class LayoutController implements ILayout {
   /** Toggle the sidebar panel (closed ⟷ contract default width). */
   toggleSidebar(): void {
     this.panels.toggleSidebar()
+  }
+
+  /** Close the narrow frame's sidebar overlay (see {@link ILayout.collapseSidebar}). */
+  collapseSidebar(): void {
+    this.panels.collapseSidebar()
   }
 
   /** Report the right panel's track and fullscreen presentation. */

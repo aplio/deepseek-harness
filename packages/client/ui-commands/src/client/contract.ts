@@ -15,6 +15,12 @@ export interface SelectConfirmation {
   readonly acknowledgeLabel: string
   readonly cancelLabel: string
   readonly confirmLabel: string
+  /**
+   * Stable risk identifier this gate is remembered under. Once the user
+   * accepts it in this browser, later selections of the same option settle
+   * without the dialog; omitted gates ask on every selection.
+   */
+  readonly acknowledgementKey?: string
 }
 
 /** One option row of a popupSelect shell. */

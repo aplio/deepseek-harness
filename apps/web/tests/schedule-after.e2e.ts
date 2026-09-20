@@ -704,6 +704,13 @@ describe.skipIf(MODE === 'record')('web e2e: active Schedule catalog', () => {
     expect(await catalogRow.getByRole('img', { name: ACTIVE_SCHEDULE_LABEL }).count()).toBe(1)
 
     await openSession(page, CATALOG_TITLE)
+    // Picking a Session from the sidebar dismissed the narrow frame's overlay;
+    // reopen it so the marker-anchored catalog is measured where it lives.
+    const reopenSidebar = page.getByRole('button', { name: 'Open sidebar' })
+    if (await reopenSidebar.isVisible()) {
+      await reopenSidebar.click()
+      await page.getByRole('button', { name: 'Collapse sidebar' }).waitFor({ timeout: 10_000 })
+    }
     const parentAgent = await liveAgent(scaffold, CATALOG_SESSION_ID)
 
     const trigger = page.getByRole('button', { name: '3 reminders' })

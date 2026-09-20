@@ -7,19 +7,14 @@ import {
 import type { ConversationSettings } from '../src/submission-settings.ts'
 
 describe('resolveSubmitMode', () => {
-  it('queues outside steer-capable busy state and applies the preference to the enter gesture', () => {
-    expect(resolveSubmitMode('queue', false, 'enter', true)).toBe('queue')
-    expect(resolveSubmitMode('queue', false, 'accelerated', true)).toBe('queue')
-    expect(resolveSubmitMode('queue', true, 'enter', true)).toBe('queue')
-    expect(resolveSubmitMode('queue', true, 'accelerated', true)).toBe('steer')
-    expect(resolveSubmitMode('queue', true, 'enter', false)).toBe('queue')
-    expect(resolveSubmitMode('queue', true, 'accelerated', false)).toBe('queue')
+  it('queues outside steer-capable busy state and applies the preference inside it', () => {
+    expect(resolveSubmitMode('queue', false, true)).toBe('queue')
+    expect(resolveSubmitMode('queue', true, true)).toBe('queue')
+    expect(resolveSubmitMode('queue', true, false)).toBe('queue')
 
-    expect(resolveSubmitMode('steer', true, 'enter', true)).toBe('steer')
-    expect(resolveSubmitMode('steer', true, 'accelerated', true)).toBe('queue')
-    expect(resolveSubmitMode('steer', false, 'enter', true)).toBe('queue')
-    expect(resolveSubmitMode('steer', false, 'accelerated', true)).toBe('queue')
-    expect(resolveSubmitMode('steer', true, 'enter', false)).toBe('queue')
+    expect(resolveSubmitMode('steer', true, true)).toBe('steer')
+    expect(resolveSubmitMode('steer', false, true)).toBe('queue')
+    expect(resolveSubmitMode('steer', true, false)).toBe('queue')
   })
 })
 

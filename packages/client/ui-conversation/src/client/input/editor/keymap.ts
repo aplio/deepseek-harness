@@ -1,10 +1,10 @@
 /**
  * Composer keymap over the Lexical command layer: menu arbitration
- * (arrows/escape/enter), space adjudication, the Enter submit gesture, and
- * paste routing. Registered at CRITICAL priority so it decides before
+ * (arrows/escape/enter), space adjudication, the Cmd/Ctrl+Enter submit chord,
+ * and paste routing. Registered at CRITICAL priority so it decides before
  * @lexical/plain-text's own Enter/paste defaults; a handler returning false
- * falls through to those defaults (Shift+Enter's line break, ordinary
- * spaces, text paste the bar routes itself).
+ * falls through to those defaults (Enter's and Shift+Enter's line break,
+ * ordinary spaces, text paste the bar routes itself).
  *
  * IME guard: a composition-closing Enter/Space must not submit or adjudicate.
  * KeyboardEvent.isComposing covers most engines; Safari delivers the closing
@@ -30,10 +30,10 @@ export interface ComposerKeymapHandlers {
   space(): boolean
   /** Dismiss the popupSelect shell (Escape layering: an open overlay closes first). */
   dismissPopup(): void
-  /** Whether Enter may submit right now (locked/busy states refuse). */
+  /** Whether the submit chord may submit right now (locked/busy states refuse). */
   canSubmit(): boolean
-  /** The Enter gesture after every guard passed; `accelerated` = Ctrl/Cmd held. */
-  submit(accelerated: boolean): void
+  /** The Cmd/Ctrl+Enter gesture after every guard passed. */
+  submit(): void
   /** Pasted files (image intake). */
   intakeFiles(files: readonly File[]): void
   /** Pasted plain text (sanitized insertion through the shell). */
@@ -138,15 +138,19 @@ export function registerComposerKeymap(editor: LexicalEditor, handlers: Composer
         return true
       }
       // Menu-open Enter picks the highlight through arbitration; a
-      // no-highlight menu passes down to the submit gesture.
+      // no-highlight menu passes down to this keymap's own gesture.
       if (handlers.arbitrate('enter', false) !== 'pass') {
         event?.preventDefault()
         return true
       }
-      event?.preventDefault()
-      if (event?.repeat === true) return true // held-down Enter must not machine-gun sends
+      // Plain Enter is a line break, exactly like Shift+Enter: the composer
+      // submits only on the Cmd/Ctrl chord, so a multi-line draft needs no
+      // modifier and an IME's closing Enter can never send the draft.
+      if (event?.ctrlKey !== true && event?.metaKey !== true) return false
+      event.preventDefault()
+      if (event.repeat) return true // held-down chord must not machine-gun sends
       if (!handlers.canSubmit()) return true
-      handlers.submit(event?.ctrlKey === true || event?.metaKey === true)
+      handlers.submit()
       return true
     }, COMMAND_PRIORITY_CRITICAL),
     editor.registerCommand(PASTE_COMMAND, (event) => {

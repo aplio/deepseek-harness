@@ -116,12 +116,12 @@ export function installDraftKeymap(
     },
     dismissPopup: () => { keyboard.dismissPopup() },
     canSubmit: () => !gate.current.locked && !gate.current.machineBusy,
-    submit: (accelerated) => {
+    submit: () => {
       const g = gate.current
-      // Empty-draft accelerated Enter acts on the queue instead of the
-      // (empty) draft: the machine rejects empty drafts, so the gesture
-      // steers every still-pending queued message into the running turn.
-      if (accelerated && g.canSteerQueue) {
+      // Empty-draft Cmd/Ctrl+Enter acts on the queue instead of the (empty)
+      // draft: the machine rejects empty drafts, so the gesture steers every
+      // still-pending queued message into the running turn.
+      if (g.canSteerQueue) {
         keyboard.steerQueue()
         return
       }
@@ -129,12 +129,9 @@ export function installDraftKeymap(
         g.showToast(g.t('file.stillUploading'))
         return
       }
-      keyboard.submit(resolveSubmitMode(
-        g.busyEnter,
-        g.running,
-        accelerated ? 'accelerated' : 'enter',
-        g.steeringAvailable,
-      ))
+      // The chord is the keyboard's only submit gesture, so it resolves the
+      // same delivery mode the primary Send button does.
+      keyboard.submit(resolveSubmitMode(g.busyEnter, g.running, g.steeringAvailable))
     },
     intakeFiles: (files) => { gate.current.intakeFiles(files) },
     pasteText: (text) => {
