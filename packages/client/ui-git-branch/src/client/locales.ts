@@ -8,6 +8,8 @@ export const zh = {
   'branch.tooltip': '分支 {ref}',
   'detached.tooltip': '游离 HEAD {ref}',
   'worktree.tooltip': '(工作树 {name})',
+  'upstream.behind': '上游有 {count} 个新提交',
+  'upstream.behind.unknown': '上游有新提交',
 } as const
 
 /** English dictionary, key-identical to the Chinese source of truth. */
@@ -15,6 +17,8 @@ export const en: Record<GitBranchKey, string> = {
   'branch.tooltip': 'Branch {ref}',
   'detached.tooltip': 'Detached HEAD {ref}',
   'worktree.tooltip': '(worktree {name})',
+  'upstream.behind': '{count} new commits upstream',
+  'upstream.behind.unknown': 'New commits upstream',
 }
 
 /** Key domain of the `gitBranch` namespace (zh is the source of truth). */

@@ -311,14 +311,26 @@ export interface Config {
 Requires: `sandboxPolicy` · `sessions` · `subprocess` · `typert`
 
 ```ts config-catalog
-/** Deployment bounds on one git invocation. */
-export interface Config {
+/** Deployment bounds on one git invocation and on the upstream check. */
+export interface Config extends UpstreamCheckConfig {
+  /** How long one settled installation upstream answer is reused. */
+  readonly checkIntervalMs: number
+}
+
+/** Deployment inputs one installation upstream check reads. */
+export interface UpstreamCheckConfig {
   /** Deadline in milliseconds for one `git` invocation. */
   readonly timeoutMs: number
+  /**
+   * Remote whose branch is the installation's fork origin. A checkout carries
+   * it as `origin` when no fork exists, in which case its branch never runs
+   * ahead and the answer stays `current`.
+   */
+  readonly upstreamRemote: string
 }
 ```
 
-来源：[`packages/api/workspace-git/src/index.ts:52`](../packages/api/workspace-git/src/index.ts)
+来源：[`packages/api/workspace-git/src/index.ts:64`](../packages/api/workspace-git/src/index.ts)
 
 <a id="deepseek-aidsh-attachment-local"></a>
 

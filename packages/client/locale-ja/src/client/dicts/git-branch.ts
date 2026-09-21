@@ -8,4 +8,6 @@ export const ja: LocaleDictOf<'gitBranch'> = {
   'branch.tooltip': 'ブランチ {ref}',
   'detached.tooltip': 'detached HEAD {ref}',
   'worktree.tooltip': '(worktree {name})',
+  'upstream.behind': 'フォーク元に未取り込みのコミットが {count} 件',
+  'upstream.behind.unknown': 'フォーク元に未取り込みのコミットあり',
 }

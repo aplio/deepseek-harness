@@ -432,7 +432,7 @@ Source: [`packages/api/workspace-files/src/index.ts`](../../packages/api/workspa
 
 ### `ctx.workspaceGit` — `WorkspaceGit`
 
-Host reader of the checkout one Session workspace lives in.
+Host reader of two checkouts: the one a Session workspace lives in, and the installation the running process came from.
 
 ```ts cordis-catalog
 /**
@@ -443,6 +443,16 @@ Host reader of the checkout one Session workspace lives in.
  * directory name and GitHub repository the checkout carries, or `none` outside a repository.
  */
 @Remote async status(workspaceGitScope: WorkspaceGitScope, signal: AbortSignal): Promise<WorkspaceGitStatus>
+
+/**
+ * Read whether the installation's own checkout is behind the fork origin it
+ * was taken from. The subject is the code running this process, so every
+ * Session sees the same answer. A settled answer is reused for
+ * `checkIntervalMs`; a failed check is not cached, so the next call retries.
+ * @returns the installation's upstream relation, or `none` when it is not a
+ * checkout, its HEAD is detached, or it carries no such remote.
+ */
+@Remote async upstream(): Promise<WorkspaceGitUpstream>
 ```
 
 Source: [`packages/api/workspace-git/src/index.ts`](../../packages/api/workspace-git/src/index.ts)

@@ -1,7 +1,7 @@
 /**
- * Browser-half lifecycle over the real SlotRegistry: the dictionary and both
- * chip seat registrations with fiber teardown proving removal (HMR safety),
- * and the injected controller face.
+ * Browser-half lifecycle over the real SlotRegistry: the dictionary and all
+ * three seat registrations with fiber teardown proving removal (HMR safety),
+ * and the injected controller faces.
  */
 // @vitest-environment jsdom
 
@@ -13,6 +13,7 @@ import type { SessionId } from '@deepseek-ai/dsh-session/types'
 import { apply, inject, type GitBranchChipInjected } from '../src/client/index.ts'
 import { apply as nodeApply } from '../src/index.ts'
 import { GitBranchChip } from '../src/client/GitBranchChip.tsx'
+import { UpstreamBadge } from '../src/client/UpstreamBadge.tsx'
 import { en, NS, zh } from '../src/client/locales.ts'
 
 const SESSION = 'session' as SessionId
@@ -21,11 +22,15 @@ afterEach(() => {
   vi.restoreAllMocks()
 })
 
-/** Boot the browser half over a real slot tree declaring the stats row's lead seat. */
+/** Boot the browser half over a real slot tree declaring the seats it occupies. */
 async function bench(): Promise<{ ctx: Context; fiber: ReturnType<Context['plugin']>; status: ReturnType<typeof vi.fn> }> {
   const status = vi.fn(async () => ({
     ok: true as const,
     value: { kind: 'branch' as const, name: 'main', worktree: 'moqt-js', github: null },
+  }))
+  const upstream = vi.fn(async () => ({
+    ok: true as const,
+    value: { kind: 'behind' as const, count: 2, github: null },
   }))
   const ctx = new Context()
   await ctx.plugin(SlotRegistry).await()
@@ -34,6 +39,7 @@ async function bench(): Promise<{ ctx: Context; fiber: ReturnType<Context['plugi
     children: {
       'conversation.composer.dock': { kind: 'list', scope: 'session' },
       'conversation.question.header.lead': { kind: 'list', scope: 'session' },
+      'sidebar.brand.status': { kind: 'single', scope: 'root' },
     },
   } as never, () => null)
   // The stats row owns one seat; the root stands in for the question card's declaration.
@@ -45,7 +51,7 @@ async function bench(): Promise<{ ctx: Context; fiber: ReturnType<Context['plugi
     },
   } as never, () => null)
   ctx.provide('locale', new LocaleRuntime(ctx))
-  const remote = { workspaceGit: { status } }
+  const remote = { workspaceGit: { status, upstream } }
   ctx.provide('remote', remote as never)
   ctx.provide('remote.workspaceGit', remote.workspaceGit as never)
   const fiber = ctx.plugin({ inject: [...inject], apply })
@@ -62,7 +68,7 @@ describe('ui-git-branch browser half', () => {
     expect(inject).toEqual(['slots', 'locale', 'remote', 'remote.workspaceGit'])
   })
 
-  it('registers one chip in each lead seat, and fiber teardown removes both (HMR safety)', async () => {
+  it('registers one chip in each lead seat and the brand-row badge, and fiber teardown removes all three (HMR safety)', async () => {
     const { ctx, fiber } = await bench()
     const stats = ctx.slots.entries('conversation.composer.stats.lead')[0]
     expect(stats?.component).toBe(GitBranchChip)
@@ -70,9 +76,11 @@ describe('ui-git-branch browser half', () => {
     const header = ctx.slots.entries('conversation.question.header.lead')[0]
     expect(header?.component).toBe(GitBranchChip)
     expect(header?.options).toMatchObject({ id: 'git-branch', order: 0 })
+    expect(ctx.slots.entries('sidebar.brand.status')[0]?.component).toBe(UpstreamBadge)
     await fiber.dispose()
     expect(seatEntryIds(ctx)).not.toContain('git-branch')
     expect(ctx.slots.entries('conversation.question.header.lead')).toHaveLength(0)
+    expect(ctx.slots.entries('sidebar.brand.status')).toHaveLength(0)
   })
 
   it('injects the checkout snapshot and the acquire/release verbs', async () => {
@@ -91,6 +99,16 @@ describe('ui-git-branch browser half', () => {
     expect(status).toHaveBeenCalledWith(SESSION, expect.any(AbortSignal))
     injected.release(SESSION)
     expect(injected.hooks.gitBranch.getSnapshot()[SESSION]).toBeUndefined()
+    await fiber.dispose()
+  })
+
+  it('reads the installation relation once and publishes it on the brand-row badge', async () => {
+    const { ctx, fiber } = await bench()
+    const entry = ctx.slots.entries('sidebar.brand.status')[0]
+    const injected = (entry?.inject as unknown as () => { hooks: { upstream: { getSnapshot(): unknown } } })()
+    await vi.waitFor(() => {
+      expect(injected.hooks.upstream.getSnapshot()).toEqual({ kind: 'behind', count: 2, github: null })
+    })
     await fiber.dispose()
   })
 

@@ -139,6 +139,10 @@ exports[`sidebar shell snapshots > renders Windows caption controls in expanded 
               </span>
             </div>
           </span>
+          <div
+            data-slot="sidebar.brand.status"
+            style="display: contents;"
+          />
         </span>
       </button>
       <button
@@ -365,6 +369,10 @@ exports[`sidebar shell snapshots > renders the expanded column (wordmark, capsul
               </span>
             </div>
           </span>
+          <div
+            data-slot="sidebar.brand.status"
+            style="display: contents;"
+          />
         </span>
       </button>
       <button
@@ -495,6 +503,10 @@ exports[`sidebar shell snapshots > renders the expanded column in the default lo
               </span>
             </div>
           </span>
+          <div
+            data-slot="sidebar.brand.status"
+            style="display: contents;"
+          />
         </span>
       </button>
       <button

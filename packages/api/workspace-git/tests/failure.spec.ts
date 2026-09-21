@@ -1,12 +1,10 @@
 /** Failure and answer mapping, driven by a scripted subprocess surface. */
 
-import { Context } from '@deepseek-ai/cordis'
 import { SessionId } from '@deepseek-ai/dsh-session/types'
-import type { SubprocessHandle, SubprocessOutcome, SubprocessSpawnSpec } from '@deepseek-ai/dsh-subprocess'
+import type { SubprocessOutcome, SubprocessSpawnSpec } from '@deepseek-ai/dsh-subprocess'
 import { describe, expect, it, vi } from 'vitest'
-import { WorkspaceGit, type WorkspaceGitScope } from '../src/index.ts'
-
-const signal = (): AbortSignal => new AbortController().signal
+import type { WorkspaceGitScope } from '../src/index.ts'
+import { handleOf, OK, scripted, serviceWith, signal } from './scripted.ts'
 
 /** One workspace identity for direct service calls. */
 const SCOPE: WorkspaceGitScope = { sessionId: SessionId('s-test'), workspaceRoot: '/workspace' }
@@ -16,50 +14,6 @@ const REF = 'branch --show-current'
 const HEAD = 'rev-parse --short HEAD'
 const TOPLEVEL = 'rev-parse --show-toplevel'
 const ORIGIN = 'config --get remote.origin.url'
-
-/** A zero exit with no signal. */
-const OK: SubprocessOutcome = { exitCode: 0, signal: null }
-
-/** A handle whose stdout comes back verbatim and whose outcome is the given one. */
-function handleOf(done: Promise<SubprocessOutcome>, stdout: string): SubprocessHandle {
-  return {
-    stdin: undefined,
-    stdout: undefined,
-    stderr: undefined,
-    control: undefined,
-    collected: {
-      stdout: { readFrom: () => ({ text: stdout, nextOffset: stdout.length, lossy: false }) },
-    },
-    done,
-    terminate: () => {},
-    waitForExit: async () => true,
-  }
-}
-
-/** One scripted answer: a fixed handle, or a thunk for invocations that must count. */
-type ScriptedAnswer = SubprocessHandle | (() => SubprocessHandle)
-
-/** Answer git invocations by their arguments; an unscripted invocation fails the test. */
-function scripted(answers: Record<string, ScriptedAnswer>): (spec: SubprocessSpawnSpec) => SubprocessHandle {
-  return (spec) => {
-    const key = spec.argv.slice(3).join(' ')
-    const answer = answers[key]
-    if (answer === undefined) throw new Error(`unscripted git invocation "${key}"`)
-    return typeof answer === 'function' ? answer() : answer
-  }
-}
-
-/** Build the service over a scripted subprocess surface. */
-function serviceWith(
-  spawn: (spec: SubprocessSpawnSpec) => SubprocessHandle,
-  timeoutMs = 5_000,
-  resolve: () => Promise<string> = async () => 'git',
-): WorkspaceGit {
-  const ctx = new Context()
-  ctx.provide('sandboxPolicy', { workspaceRoot: SCOPE.workspaceRoot } as never)
-  ctx.provide('subprocess', { resolveExecutable: resolve, spawn } as never)
-  return new WorkspaceGit(ctx, { timeoutMs })
-}
 
 describe('WorkspaceGit.status over a scripted subprocess', () => {
   it('runs git against the workspace directory and folds its three answers', async () => {

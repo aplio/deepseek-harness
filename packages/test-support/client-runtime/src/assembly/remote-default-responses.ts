@@ -34,6 +34,8 @@ export const remoteDefaultResponses: RemoteTable = {
     'permissionPresets/catalog': ok({ options: [] }),
     // ui-git-branch composer chip for the first Session whose input bar mounts; fixture directories are not checkouts.
     'workspaceGit/status': ok({ kind: 'none' }),
+    // ui-git-branch brand-row badge on plugin activation; the test installation is not a checkout.
+    'workspaceGit/upstream': ok({ kind: 'none' }),
   },
   // Stream endpoints the roster opens later than boot; declared so a spec that forgets the script gets a stream miss.
   streams: [

@@ -283,7 +283,7 @@ const SERVICE_ROLES: ServiceRole[] = [
     pkg: 'api-workspace-git',
     title: 'Host workspace git Remote service',
     mode: 'core',
-    note: 'Answers which checkout the Session workspace directory lives in — branch or detached commit, worktree directory name, and the origin GitHub repository — through uncached git reads that treat an unavailable fact as an answer.',
+    note: 'Answers which checkout the Session workspace directory lives in — branch or detached commit, worktree directory name, and the origin GitHub repository — through uncached git reads that treat an unavailable fact as an answer, and whether the running installation checkout is behind the fork origin its upstream remote names, cached for a deployment interval because that read reaches the network.',
   },
   {
     key: 'workspaceController',

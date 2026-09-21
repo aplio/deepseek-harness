@@ -1,14 +1,17 @@
 /**
  * Workspace git service: the checkout the session workspace directory lives
- * in, exposed as the `workspaceGit` Remote namespace.
+ * in, exposed as the `workspaceGit` Remote namespace, plus whether the running
+ * installation's own checkout is behind the fork origin it came from.
  *
- * The answer is ambient environment information, not session state: nothing
+ * Both answers are ambient environment information, not session state: nothing
  * here writes a session event or reaches a model request. Git itself resolves
  * worktrees, submodules, and detached HEAD, so the service maps `git` answers
- * onto the wire union.
+ * onto the wire union. The installation answer reaches the network, so it is
+ * cached and re-read at most once per `checkIntervalMs`.
  */
 
 import { basename } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import type { Context } from '@deepseek-ai/cordis'
 import z from '@deepseek-ai/schemastery'
 import type {} from '@deepseek-ai/dsh-sandbox-policy'
@@ -19,12 +22,21 @@ import type {} from '@deepseek-ai/dsh-subprocess'
 import type { SessionId } from '@deepseek-ai/dsh-session/types'
 import { Remote, TypertRemoteService, type TypertLookup } from '@deepseek-ai/dsh-typert-protocol'
 import { githubRepository } from './github.ts'
-import type { WorkspaceGitGithub, WorkspaceGitStatus } from './types.ts'
+import type { WorkspaceGitGithub, WorkspaceGitStatus, WorkspaceGitUpstream } from './types.ts'
+import { checkUpstream, type UpstreamCheckConfig } from './upstream-check.ts'
 
 export type * from './types.ts'
 
 /** A rev-parse answer is one ref name; this bounds a hostile or damaged repository. */
 const OUTPUT_CAP_BYTES = 64 * 1024
+
+/**
+ * Repository root of the installation running this module. Source
+ * (`src/index.ts`) and built (`lib/index.js`) entries sit at the same depth, so
+ * one relative URL serves both; an installed package resolves inside
+ * `node_modules`, where the checkout probe finds no repository.
+ */
+const INSTALLATION_ROOT = fileURLToPath(new URL('../../../../', import.meta.url))
 
 declare module '@deepseek-ai/cordis' {
   interface Context {
@@ -48,23 +60,31 @@ declare module '@deepseek-ai/dsh-typert-protocol' {
   }
 }
 
-/** Deployment bounds on one git invocation. */
-export interface Config {
-  /** Deadline in milliseconds for one `git` invocation. */
-  readonly timeoutMs: number
+/** Deployment bounds on one git invocation and on the upstream check. */
+export interface Config extends UpstreamCheckConfig {
+  /** How long one settled installation upstream answer is reused. */
+  readonly checkIntervalMs: number
 }
 
-/** Host reader of the checkout one Session workspace lives in. */
+/** Host reader of two checkouts: the one a Session workspace lives in, and the installation the running process came from. */
 export class WorkspaceGit extends TypertRemoteService {
   static inject = ['sandboxPolicy', 'sessions', 'subprocess', 'typert']
 
   static Config: z<Config> = z.object({
     timeoutMs: z.number().step(1).min(1).max(600_000).required(),
+    upstreamRemote: z.string().min(1).required(),
+    checkIntervalMs: z.number().step(1).min(1).required(),
   })
+
+  /** Latest settled installation answer per installation root, with the time it settled. */
+  private readonly upstreamAnswers = new Map<string, { checkedAt: number; value: WorkspaceGitUpstream }>()
+
+  /** One check in flight per installation root, so concurrent callers share the network read. */
+  private readonly upstreamChecks = new Map<string, Promise<WorkspaceGitUpstream>>()
 
   /**
    * @param ctx - Host context carrying the session store and process capability.
-   * @param config - deployment deadline for one git invocation.
+   * @param config - deployment bounds for one git invocation and the upstream check.
    */
   constructor(ctx: Context, private readonly config: Config) {
     super(ctx, 'workspaceGit')
@@ -104,7 +124,7 @@ export class WorkspaceGit extends TypertRemoteService {
     // `branch --show-current` prints nothing on a detached HEAD, names an
     // unborn branch before its first commit, and fails outside a repository:
     // one read separates all three answers.
-    const name = await this.runGit(workspaceGitScope, ['branch', '--show-current'], signal)
+    const name = await this.runGit(workspaceGitScope.workspaceRoot, ['branch', '--show-current'], signal)
     if (name === null) return { kind: 'none' }
     // The worktree name and the remote are independent of the ref answer: a
     // detached HEAD still names its directory, and a bare repository still
@@ -114,9 +134,44 @@ export class WorkspaceGit extends TypertRemoteService {
       this.github(workspaceGitScope, signal),
     ])
     if (name !== '') return { kind: 'branch', name, worktree, github }
-    const head = await this.runGit(workspaceGitScope, ['rev-parse', '--short', 'HEAD'], signal)
+    const head = await this.runGit(workspaceGitScope.workspaceRoot, ['rev-parse', '--short', 'HEAD'], signal)
     if (head === null || head === '') return { kind: 'none' }
     return { kind: 'detached', head, worktree, github }
+  }
+
+  /**
+   * Read whether the installation's own checkout is behind the fork origin it
+   * was taken from. The subject is the code running this process, so every
+   * Session sees the same answer. A settled answer is reused for
+   * `checkIntervalMs`; a failed check is not cached, so the next call retries.
+   * @returns the installation's upstream relation, or `none` when it is not a
+   * checkout, its HEAD is detached, or it carries no such remote.
+   */
+  @Remote
+  async upstream(): Promise<WorkspaceGitUpstream> {
+    const settled = this.upstreamAnswers.get(INSTALLATION_ROOT)
+    if (settled !== undefined && Date.now() - settled.checkedAt < this.config.checkIntervalMs) {
+      return settled.value
+    }
+    const inFlight = this.upstreamChecks.get(INSTALLATION_ROOT)
+    if (inFlight !== undefined) return inFlight
+    const check = checkUpstream(
+      (directory, argv, signal) => this.runGit(directory, argv, signal),
+      INSTALLATION_ROOT,
+      this.config,
+    ).then(
+      (value) => {
+        // Only settled relations are reusable: an unreachable remote must be
+        // retried by the next caller rather than reported for a whole interval.
+        if (value.kind !== 'unknown') {
+          this.upstreamAnswers.set(INSTALLATION_ROOT, { checkedAt: Date.now(), value })
+        }
+        return value
+      },
+      (): WorkspaceGitUpstream => ({ kind: 'unknown' }),
+    ).finally(() => { this.upstreamChecks.delete(INSTALLATION_ROOT) })
+    this.upstreamChecks.set(INSTALLATION_ROOT, check)
+    return check
   }
 
   /**
@@ -127,7 +182,7 @@ export class WorkspaceGit extends TypertRemoteService {
    * @returns the directory name, or null when the repository has no working tree or the read failed.
    */
   private async worktreeName(workspaceGitScope: WorkspaceGitScope, signal: AbortSignal): Promise<string | null> {
-    const root = await this.runGit(workspaceGitScope, ['rev-parse', '--show-toplevel'], signal)
+    const root = await this.runGit(workspaceGitScope.workspaceRoot, ['rev-parse', '--show-toplevel'], signal)
     if (root === null) return null
     const name = basename(root)
     return name === '' ? null : name
@@ -140,29 +195,29 @@ export class WorkspaceGit extends TypertRemoteService {
    * @returns the repository, or null when the remote is absent, unreadable, or addresses another host.
    */
   private async github(workspaceGitScope: WorkspaceGitScope, signal: AbortSignal): Promise<WorkspaceGitGithub | null> {
-    const url = await this.runGit(workspaceGitScope, ['config', '--get', 'remote.origin.url'], signal)
+    const url = await this.runGit(workspaceGitScope.workspaceRoot, ['config', '--get', 'remote.origin.url'], signal)
     if (url === null || url === '') return null
     return githubRepository(url)
   }
 
   /**
-   * Run one `git -C <workspaceRoot> <argv>` under the deployment deadline and
+   * Run one `git -C <directory> <argv>` under the deployment deadline and
    * return its trimmed stdout.
-   * @param workspaceGitScope - workspace directory the command runs against.
+   * @param directory - directory the command runs against.
    * @param argv - git arguments including the subcommand.
    * @param signal - caller cancellation, combined with the deployment deadline.
    * @returns stdout on a zero exit, otherwise null.
    */
   private async runGit(
-    workspaceGitScope: WorkspaceGitScope,
+    directory: string,
     argv: readonly string[],
     signal: AbortSignal,
   ): Promise<string | null> {
     const executable = await this.gitPath()
     if (executable === null) return null
     const handle = this.ctx.subprocess.spawn({
-      argv: [executable, '-C', workspaceGitScope.workspaceRoot, ...argv],
-      cwd: workspaceGitScope.workspaceRoot,
+      argv: [executable, '-C', directory, ...argv],
+      cwd: directory,
       stdio: {
         stdin: 'ignore',
         stdout: { maxBytes: OUTPUT_CAP_BYTES },

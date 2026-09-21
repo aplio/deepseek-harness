@@ -5,7 +5,7 @@ import TypertRegistry from '@deepseek-ai/dsh-typert-registry'
 import { describe, expect, it, vi } from 'vitest'
 import WorkspaceGit from '../src/index.ts'
 
-const CONFIG = { timeoutMs: 5_000 }
+const CONFIG = { timeoutMs: 5_000, upstreamRemote: 'upstream', checkIntervalMs: 86_400_000 }
 
 function header(id: SessionId, cwd?: string): SessionHeader {
   return {

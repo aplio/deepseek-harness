@@ -41,7 +41,11 @@ export async function openHarness(prefix: string, timeoutMs = 10_000): Promise<H
   const ctx = new Context()
   ctx.provide('sandboxPolicy', { workspaceRoot: root } as never)
   const fiber = await ctx.plugin(LocalSubprocessRuntime)
-  const service = new WorkspaceGit(ctx, { timeoutMs } satisfies Config)
+  const service = new WorkspaceGit(ctx, {
+    timeoutMs,
+    upstreamRemote: 'upstream',
+    checkIntervalMs: 86_400_000,
+  } satisfies Config)
   return {
     root,
     ctx,

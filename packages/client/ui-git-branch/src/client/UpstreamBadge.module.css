@@ -1,0 +1,26 @@
+/* Sidebar brand-row notice: the checkout serving this process is behind the
+   fork origin its `upstream` remote names. Rendered inside the brand row's New
+   Session button, so it inherits the row's tier and never takes the click. */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  flex: none;
+  padding: 0 5px;
+  border-radius: 24px;
+  color: var(--dsw-alias-label-tertiary);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 18px;
+  background: var(--dsw-alias-interactive-bg-hover);
+}
+
+.badge svg {
+  width: 13px;
+  height: 13px;
+}
+
+.count {
+  font-variant-numeric: tabular-nums;
+}

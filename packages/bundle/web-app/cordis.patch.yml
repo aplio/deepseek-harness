@@ -114,11 +114,15 @@
 
     # Workspace git service: the checkout the session workspace directory
     # lives in — ref, worktree directory, and origin GitHub repository — read
-    # through the composition's subprocess provider.
+    # through the composition's subprocess provider, plus whether the running
+    # installation's own checkout is behind the fork origin its `upstream`
+    # remote names (re-read at most once a day).
     - id: workspace-git
       name: '@deepseek-ai/dsh-api-workspace-git'
       config:
         timeoutMs: 5000
+        upstreamRemote: upstream
+        checkIntervalMs: 86400000
 
     # Configuration-surface reads and writes over Typert Remote. Each method
     # reports an actionable error when its settings-domain provider is absent.

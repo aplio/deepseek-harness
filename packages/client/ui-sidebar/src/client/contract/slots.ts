@@ -28,6 +28,13 @@ declare module '@deepseek-ai/dsh-client-ui-slots' {
      */
     'sidebar.brand.name': { kind: 'single'; scope: 'root'; owner: SidebarBrandNameOwnerProps }
     /**
+     * Non-interactive status rendered after the expanded brand name, inside the
+     * New Session shortcut the brand row already is. Declared by this package's
+     * `sidebar` entry; a deployment reports state about the running build here
+     * without replacing the name or the shortcut.
+     */
+    'sidebar.brand.status': { kind: 'single'; scope: 'root'; owner: SidebarBrandStatusOwnerProps }
+    /**
      * Global panel icons. Each list id addresses the matching main panel;
      * the sidebar owns the button and resolves its label from list metadata.
      */
@@ -62,6 +69,12 @@ export interface SidebarBrandMarkOwnerProps {
 /** Empty owner share for the sidebar brand-name occupant. */
 export interface SidebarBrandNameOwnerProps {
   /** Marker field: the occupant owns its own content and width. */
+  children?: never
+}
+
+/** Empty owner share for the sidebar brand-status occupant. */
+export interface SidebarBrandStatusOwnerProps {
+  /** Marker field: the occupant owns its own content. */
   children?: never
 }
 
@@ -138,6 +151,7 @@ export type SidebarRootComponentProps =
   & PropsRenderSlots<
     | 'sidebar.brand.mark'
     | 'sidebar.brand.name'
+    | 'sidebar.brand.status'
     | 'sidebar.toggle.badge'
     | 'sidebar.panellist'
     | 'sidebar.workspaces'

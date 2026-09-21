@@ -26,6 +26,39 @@ interface WorkspaceGitRepository {
 }
 
 /**
+ * Whether the running installation's own checkout is behind the fork origin it
+ * was taken from. The subject is the code serving the process, not any Session
+ * workspace: the answer changes only when that checkout or its remote moves.
+ */
+export type WorkspaceGitUpstream =
+  | {
+    /** The upstream branch is already contained in the checkout's HEAD. */
+    readonly kind: 'current'
+    /** GitHub repository of the upstream remote, or null when it names another host. */
+    readonly github: WorkspaceGitGithub | null
+  }
+  | {
+    /** The upstream branch carries commits HEAD does not have. */
+    readonly kind: 'behind'
+    /**
+     * Commits on the upstream branch that HEAD lacks, or null when their
+     * objects are not in the local repository, so the exact count is unknown
+     * while the update itself is certain.
+     */
+    readonly count: number | null
+    /** GitHub repository of the upstream remote, or null when it names another host. */
+    readonly github: WorkspaceGitGithub | null
+  }
+  | {
+    /** The installation is not a checkout, has no upstream remote, or HEAD is detached. */
+    readonly kind: 'none'
+  }
+  | {
+    /** The check did not settle: the remote was unreachable or a git invocation failed. */
+    readonly kind: 'unknown'
+  }
+
+/**
  * What one Session workspace currently has checked out, as the Host read it
  * from the repository containing the workspace directory.
  */

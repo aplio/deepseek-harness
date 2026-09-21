@@ -3327,14 +3327,20 @@ export const SERVICE_API: readonly ServiceApiEntry[] = [
   },
   {
     key: 'workspaceGit',
-    summary: 'Host reader of the checkout one Session workspace lives in.',
-    description: 'Host reader of the checkout one Session workspace lives in.',
+    summary: 'Host reader of two checkouts: the one a Session workspace lives in, and the installation the running process came from.',
+    description: 'Host reader of two checkouts: the one a Session workspace lives in, and the installation the running process came from.',
     methods: [
       {
         signature: '@Remote async status(workspaceGitScope: WorkspaceGitScope, signal: AbortSignal): Promise<WorkspaceGitStatus>',
         description: 'Read the checkout one Session workspace lives in.',
         parameters: [{ name: 'workspaceGitScope', description: 'header-derived workspace directory for the Session identity on the wire.' }, { name: 'signal', description: 'caller cancellation.' }],
         returns: 'the checked-out branch or detached short commit id, together with the worktree directory name and GitHub repository the checkout carries, or `none` outside a repository.',
+      },
+      {
+        signature: '@Remote async upstream(): Promise<WorkspaceGitUpstream>',
+        description: 'Read whether the installation\'s own checkout is behind the fork origin it was taken from. The subject is the code running this process, so every Session sees the same answer. A settled answer is reused for `checkIntervalMs`; a failed check is not cached, so the next call retries.',
+        parameters: [],
+        returns: 'the installation\'s upstream relation, or `none` when it is not a checkout, its HEAD is detached, or it carries no such remote.',
       },
     ],
   },
@@ -7206,12 +7212,20 @@ export const TYPE_API: readonly TypeApiEntry[] = [
     declaration: 'export type WorkspaceFollowIncrement = {\n    readonly type: \'upsert\';\n    readonly workspace: WorkspaceView;\n} | {\n    readonly type: \'remove\';\n    readonly workspaceId: WorkspaceId;\n} | {\n    readonly type: \'order\';\n    readonly workspaceIds: readonly WorkspaceId[];\n} | {\n    readonly type: \'archived\';\n    readonly archivedSessionIds: readonly SessionId[];\n};',
   },
   {
+    name: 'WorkspaceGitGithub',
+    declaration: 'export interface WorkspaceGitGithub {\n    readonly slug: string;\n    readonly url: string;\n}',
+  },
+  {
     name: 'WorkspaceGitScope',
     declaration: 'export interface WorkspaceGitScope {\n    readonly sessionId: SessionId;\n    readonly workspaceRoot: string;\n}',
   },
   {
     name: 'WorkspaceGitStatus',
     declaration: 'export type WorkspaceGitStatus = (WorkspaceGitRepository & {\n    readonly kind: \'branch\';\n    readonly name: string;\n}) | (WorkspaceGitRepository & {\n    readonly kind: \'detached\';\n    readonly head: string;\n}) | {\n    readonly kind: \'none\';\n};',
+  },
+  {
+    name: 'WorkspaceGitUpstream',
+    declaration: 'export type WorkspaceGitUpstream = {\n    readonly kind: \'current\';\n    readonly github: WorkspaceGitGithub | null;\n} | {\n    readonly kind: \'behind\';\n    readonly count: number | null;\n    readonly github: WorkspaceGitGithub | null;\n} | {\n    readonly kind: \'none\';\n} | {\n    readonly kind: \'unknown\';\n};',
   },
   {
     name: 'WorkspaceInsertBeforeRequest',

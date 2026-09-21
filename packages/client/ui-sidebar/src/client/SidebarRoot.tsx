@@ -231,6 +231,7 @@ export function SidebarRoot({
                     ),
                 })}
               </span>
+              {renderSlot('sidebar.brand.status', {})}
             </span>
           </button>
         )}

@@ -843,6 +843,7 @@ export const TYPE_LINK_EXEMPTIONS: Readonly<Record<string, string>> = {
   WebTerminalId: 'Browser terminal identity is owned by packages/api/terminal-controller/README.md',
   WorkspaceGitScope: 'Host workspace git lookup contract is owned by packages/api/workspace-git/README.md',
   WorkspaceGitStatus: 'Host workspace git endpoint contract is owned by packages/api/workspace-git/README.md',
+  WorkspaceGitUpstream: 'Host workspace git endpoint contract is owned by packages/api/workspace-git/README.md',
   WorkspaceGitGithub: 'Host workspace git endpoint contract is owned by packages/api/workspace-git/README.md',
 }
 
