@@ -243,3 +243,64 @@
 :global([data-platform='darwin']) .overlay {
   -webkit-app-region: no-drag;
 }
+
+/* Narrow frames: the 800px panel and its 188px rail cannot fit side by side,
+   and a squeezed content column turns every section into one long scroll. The
+   panel fills the viewport and the rail becomes a horizontal tab strip, so the
+   active section keeps the full width. */
+@media (max-width: 640px) {
+  .overlay {
+    align-items: stretch;
+  }
+
+  .panel {
+    flex-direction: column;
+    width: 100%;
+    max-width: none;
+    height: 100vh;
+    height: 100dvh;
+    border-radius: 0;
+  }
+
+  .nav {
+    width: auto;
+    gap: 8px;
+    padding: 12px 12px 0;
+  }
+
+  .navTitle {
+    padding: 0 4px;
+    font-size: 15px;
+    line-height: 22px;
+  }
+
+  .navList {
+    flex-direction: row;
+    gap: 6px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-bottom: 8px;
+    scrollbar-width: none;
+  }
+
+  .navList::-webkit-scrollbar {
+    display: none;
+  }
+
+  .navCell {
+    flex: none;
+    height: 34px;
+    padding: 6px 12px;
+    border-radius: 10px;
+  }
+
+  .header {
+    align-items: center;
+    height: 46px;
+    padding: 6px 10px 6px 12px;
+  }
+
+  .options {
+    padding: 0 12px 16px;
+  }
+}

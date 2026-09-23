@@ -1,10 +1,9 @@
 /** Japanese dictionary for the `model` namespace (client/ui-model-selection/src/client/locales.ts). */
-import type { LocaleDictOf } from '@deepseek-ai/dsh-client-ui-slots'
 // Type-only: loads the `model` key union declared by @deepseek-ai/dsh-client-ui-model-selection.
 import type {} from '@deepseek-ai/dsh-client-ui-model-selection/client'
 
-/** `model` copy in Japanese, complete against the owner's key union. */
-export const ja: LocaleDictOf<'model'> = {
+/** `model` copy in Japanese, keys absent here fall back to English. */
+export const ja: Record<string, string> = {
   'command.label': 'モデル',
   'command.description': 'この会話で使用するモデルを選択します',
   'option.loadError': 'カタログの読み込みに失敗しました：{message}',

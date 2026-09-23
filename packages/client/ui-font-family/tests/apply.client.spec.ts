@@ -47,6 +47,7 @@ async function bench(options: { isLoopback?: boolean; firstDescribe?: Promise<De
     ns: FONT_SETTINGS_NAMESPACE,
     schema: FontSettingsSchema.toJSON(),
     value: Object.fromEntries(section),
+    autoGenerate: false,
     applies: 'live' as const,
     secrets: [],
     revision,
@@ -100,7 +101,7 @@ function fontRowFace(slots: SlotRegistry) {
 
 describe('ui-font-family apply', () => {
   it('declares the services it binds', () => {
-    expect(inject).toEqual(['slots', 'locale', 'remote', 'settingsScope'])
+    expect(inject).toEqual(['slots', 'locale', 'remote', 'configForms'])
   })
 
   it('registers localized copy and the Font row (declaration before or after apply)', async () => {
@@ -171,6 +172,7 @@ describe('ui-font-family apply', () => {
           ns: FONT_SETTINGS_NAMESPACE,
           schema: FontSettingsSchema.toJSON(),
           value: { fontFamily: '"Kept Font"' },
+          autoGenerate: false,
           applies: 'live',
           secrets: [],
           revision: 1,

@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { IconBranchOutline16 } from '@deepseek-ai/dsh-client-ui-primitives'
+import { IconBranchOutlineRegular } from '@deepseek-ai/dsh-client-ui-primitives'
 import type { ObservableSnapshot } from '@deepseek-ai/dsh-client-store'
 import type { SessionId } from '@deepseek-ai/dsh-session/types'
 import type { WorkspaceGitStatus } from '@deepseek-ai/dsh-api-workspace-git/types'
@@ -97,7 +97,7 @@ export function GitBranchChip(props: GitBranchChipProps): React.JSX.Element | nu
   const text = reading.worktree === null ? reading.ref : `${reading.ref} (${reading.worktree})`
   const content = (
     <>
-      <IconBranchOutline16 />
+      <IconBranchOutlineRegular />
       <span className={css.label}>{text}</span>
     </>
   )

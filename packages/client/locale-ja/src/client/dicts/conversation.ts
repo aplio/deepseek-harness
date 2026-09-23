@@ -1,10 +1,9 @@
 /** Japanese dictionary for the `conversation` namespace (client/ui-conversation/src/client/locales.ts). */
-import type { LocaleDictOf } from '@deepseek-ai/dsh-client-ui-slots'
 // Type-only: loads the `conversation` key union declared by @deepseek-ai/dsh-client-ui-conversation.
 import type {} from '@deepseek-ai/dsh-client-ui-conversation/client'
 
-/** `conversation` copy in Japanese, complete against the owner's key union. */
-export const ja: LocaleDictOf<'conversation'> = {
+/** `conversation` copy in Japanese, keys absent here fall back to English. */
+export const ja: Record<string, string> = {
   'hint.plan': 'タスクを説明するとプランを生成します',
   'hint.goal': 'ゴールを入力するとエージェントが継続的に実行します',
   'hint.goal.active': 'ゴール実行中。edit で編集 / pause で一時停止 / resume で再開 / clear でクリア',

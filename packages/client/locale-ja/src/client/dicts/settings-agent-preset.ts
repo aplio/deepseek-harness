@@ -1,10 +1,9 @@
 /** Japanese dictionary for the `settings.agentPreset` namespace (client/ui-agent-preset/src/client/locales.ts). */
-import type { LocaleDictOf } from '@deepseek-ai/dsh-client-ui-slots'
 // Type-only: loads the `settings.agentPreset` key union declared by @deepseek-ai/dsh-client-ui-agent-preset.
 import type {} from '@deepseek-ai/dsh-client-ui-agent-preset/client'
 
-/** `settings.agentPreset` copy in Japanese, complete against the owner's key union. */
-export const ja: LocaleDictOf<'settings.agentPreset'> = {
+/** `settings.agentPreset` copy in Japanese, keys absent here fall back to English. */
+export const ja: Record<string, string> = {
   'error': 'エージェントプリセットを読み込めませんでした。',
   'userTrust': 'カスタム',
   'seatHint': 'これから開始するセッションのエージェントプリセット',

@@ -31,10 +31,11 @@ import type { Translate } from '@deepseek-ai/dsh-client-ui-slots'
 import type { ComposerBarProps } from '../contract/slots.ts'
 import { DraftEditor } from '../input/editor/DraftEditor.tsx'
 import {
-  focusDraftEditor, installDraftFilePicker, installDraftKeymap, installDraftWheel,
+  dismissTouchKeyboard, focusDraftEditor, installDraftFilePicker, installDraftKeymap, installDraftWheel,
   keepDraftFocus, revealDraftSelection,
 } from '../input/editor/view-binding.ts'
 import { resolveSubmitMode } from '../input/submission-policy.ts'
+import { usesTouchKeyboard } from '../input/touch-keyboard.ts'
 import { attachmentErrorText, imageSizeText } from '../image-labels.ts'
 import { ContextMeter } from './ContextMeter.tsx'
 import { observeControlRow } from './control-row-layout.ts'
@@ -174,9 +175,11 @@ export const InputBar = memo(function InputBar({
   // reveal that comes with it. Lexical's focus() suppresses the browser's
   // scroll walk (preventScroll inside), so the reveal in our own scrollport
   // is ours to perform — switching to a longer draft otherwise leaves the
-  // caret (restored at the draft's end) off screen.
+  // caret (restored at the draft's end) off screen. A touch device skips the
+  // whole gesture: the on-screen keyboard would open over the conversation
+  // when a Session is picked from the sidebar, so focus waits for a tap.
   useEffect(() => {
-    if (locked || editor === null) return
+    if (locked || editor === null || usesTouchKeyboard()) return
     focusDraftEditor(editor, revealSelection)
   }, [locked, sessionId, editor])
 
@@ -318,6 +321,7 @@ export const InputBar = memo(function InputBar({
     if (keyboard === undefined) return // absent machine: the button is disabled
     /* v8 ignore next -- defensive: the primary button is disabled for empty, disabled, and pending-upload states. */
     if (!empty && !disabled && !machineBusy && !uploadsPending) keyboard.submit(primarySubmitMode)
+    dismissTouchKeyboard(editor)
   }
 
   // Claim ghost hint: rendered by CSS as generated content after the last

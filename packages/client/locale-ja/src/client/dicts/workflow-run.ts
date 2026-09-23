@@ -1,10 +1,9 @@
 /** Japanese dictionary for the `workflowRun` namespace (client/ui-workflow-run/src/client/locales.ts). */
-import type { LocaleDictOf } from '@deepseek-ai/dsh-client-ui-slots'
 // Type-only: loads the `workflowRun` key union declared by @deepseek-ai/dsh-client-ui-workflow-run.
 import type {} from '@deepseek-ai/dsh-client-ui-workflow-run/client'
 
-/** `workflowRun` copy in Japanese, complete against the owner's key union. */
-export const ja: LocaleDictOf<'workflowRun'> = {
+/** `workflowRun` copy in Japanese, keys absent here fall back to English. */
+export const ja: Record<string, string> = {
   'run.title': '{name}',
   'run.members.one': '{count} 件のメンバー',
   'run.members.other': '{count} 件のメンバー',

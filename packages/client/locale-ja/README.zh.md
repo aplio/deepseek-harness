@@ -31,7 +31,7 @@ kind: "package-reference"
 
 ### 更新翻译
 
-每份词典位于 `src/client/dicts/<namespace>.ts`，以 `LocaleDictOf<'<namespace>'>` 声明，并类型化导入其所属包。键缺失或多余都会编译失败，因此上游键改名会让本包构建失败，直到翻译跟进。注册表后续新增的命名空间在语言包提供词典之前以英文呈现。
+每份词典位于 `src/client/dicts/<namespace>.ts`，以 `Record<string, string>` 声明，并类型化导入其所属包。按 locale 注册的形式接受不完整的词典，因此本包未携带的键会回退到英文而不会让构建失败，上游删除的键则留下一条惰性条目。注册表后续新增的命名空间在语言包提供词典之前以英文呈现。
 
 <a id="understand-the-implementation"></a>
 ## 理解实现
@@ -47,7 +47,7 @@ kind: "package-reference"
 
 ### 词典类型
 
-`LocaleDictOf<N>` 解析所属包合并进 `LocaleNamespaceMap` 的精确键联合，因此每份词典在构造上就是完整的。类型化导入加载声明所在模块：若所属包的词典模块自身携带 `LocaleNamespaceMap` 声明，则导入该模块；否则导入加载它的客户端入口（有若干所属方把声明放在注册表旁，而非词典旁）。以按 locale 形式注册的无类型命名空间——`permission.access` 与 `directory-browser`——使用 `Record<string, string>`，因为其所属方从未声明键联合。
+语言包通过按 locale 的 `ctx.locale.register(ns, 'ja', dict)` 形式注册，其词典不带类型：上游的键改名或删除不会再阻塞本包构建，未翻译的键经语言声明的 `en` 回退链解析。对所属包的类型化导入仍会加载声明该命名空间键集合的模块，因此每份词典的键域来源仍有记录，而完整性不再是构建门槛。
 
 ### 源码地图
 

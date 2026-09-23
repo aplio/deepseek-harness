@@ -1,10 +1,9 @@
 /** Japanese dictionary for the `subagent` namespace (client/ui-subagent/src/client/locales.ts). */
-import type { LocaleDictOf } from '@deepseek-ai/dsh-client-ui-slots'
 // Type-only: loads the `subagent` key union declared by @deepseek-ai/dsh-client-ui-subagent.
 import type {} from '@deepseek-ai/dsh-client-ui-subagent/client'
 
-/** `subagent` copy in Japanese, complete against the owner's key union. */
-export const ja: LocaleDictOf<'subagent'> = {
+/** `subagent` copy in Japanese, keys absent here fall back to English. */
+export const ja: Record<string, string> = {
   'diagnostic.corrupt': 'セッション記録が破損しています',
   'diagnostic.unsupported': 'サブエージェント記録のバージョンに対応していません',
   'diagnostic.unavailable': 'セッション記録は一時的に利用できません',

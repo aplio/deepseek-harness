@@ -1,10 +1,9 @@
 /** Japanese dictionary for the `sidebarDocumentPreview` namespace (client/ui-sidebar-documentpreview/src/client/locales.ts). */
-import type { LocaleDictOf } from '@deepseek-ai/dsh-client-ui-slots'
 // Type-only: loads the `sidebarDocumentPreview` key union declared by @deepseek-ai/dsh-client-ui-sidebar-documentpreview.
 import type {} from '@deepseek-ai/dsh-client-ui-sidebar-documentpreview/client'
 
-/** `sidebarDocumentPreview` copy in Japanese, complete against the owner's key union. */
-export const ja: LocaleDictOf<'sidebarDocumentPreview'> = {
+/** `sidebarDocumentPreview` copy in Japanese, keys absent here fall back to English. */
+export const ja: Record<string, string> = {
   'loading': '読み込み中…',
   'loadMore': 'さらに読み込む',
   'changed': 'ファイルが更新されました。現在は古い内容を表示しています。',

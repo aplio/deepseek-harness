@@ -32,10 +32,13 @@ export interface FontSettings {
 /** Body variables carrying the chosen family: UI text first, code second. */
 export const FONT_FAMILY_VARIABLES = ['--dsw-font-family', '--ds-font-family-code'] as const
 
-/** Durable font schema; also the wire envelope the browser scope validates against. */
-export const FontSettingsSchema: z<FontSettings> = z.object({
+/** Durable font fields shared by the Host Config schema and the browser scope. */
+export const FontSettingsFields = {
   [FONT_FAMILY_FIELD]: z.string().max(FONT_FAMILY_MAX_LENGTH).pattern(FONT_FAMILY_PATTERN).required(false),
-})
+}
+
+/** Durable font schema; also the wire envelope the browser scope validates against. */
+export const FontSettingsSchema: z<FontSettings> = z.object(FontSettingsFields)
 
 /**
  * Normalize one font-family override from the settings row: surrounding

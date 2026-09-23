@@ -1,10 +1,9 @@
 /** Japanese dictionary for the `reference` namespace (client/ui-reference/src/client/locales.ts). */
-import type { LocaleDictOf } from '@deepseek-ai/dsh-client-ui-slots'
 // Type-only: loads the `reference` key union declared by @deepseek-ai/dsh-client-ui-reference.
 import type {} from '@deepseek-ai/dsh-client-ui-reference/src/client/locales.ts'
 
-/** `reference` copy in Japanese, complete against the owner's key union. */
-export const ja: LocaleDictOf<'reference'> = {
+/** `reference` copy in Japanese, keys absent here fall back to English. */
+export const ja: Record<string, string> = {
   'section.files': 'ファイルとフォルダー',
   'section.subagents': 'サブエージェント',
   'section.sessions': 'セッション',

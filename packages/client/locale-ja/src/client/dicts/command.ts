@@ -1,10 +1,9 @@
 /** Japanese dictionary for the `command` namespace (client/ui-commands/src/client/locales.ts). */
-import type { LocaleDictOf } from '@deepseek-ai/dsh-client-ui-slots'
 // Type-only: loads the `command` key union declared by @deepseek-ai/dsh-client-ui-commands.
 import type {} from '@deepseek-ai/dsh-client-ui-commands/client'
 
-/** `command` copy in Japanese, complete against the owner's key union. */
-export const ja: LocaleDictOf<'command'> = {
+/** `command` copy in Japanese, keys absent here fall back to English. */
+export const ja: Record<string, string> = {
   'section.add': '追加',
   'section.commands': 'コマンド',
   'label.goal': 'ゴール',

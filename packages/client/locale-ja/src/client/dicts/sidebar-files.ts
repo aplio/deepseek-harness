@@ -1,10 +1,9 @@
 /** Japanese dictionary for the `sidebarFiles` namespace (client/ui-sidebar-files/src/client/locales.ts). */
-import type { LocaleDictOf } from '@deepseek-ai/dsh-client-ui-slots'
 // Type-only: loads the `sidebarFiles` key union declared by @deepseek-ai/dsh-client-ui-sidebar-files.
 import type {} from '@deepseek-ai/dsh-client-ui-sidebar-files/src/client/locales.ts'
 
-/** `sidebarFiles` copy in Japanese, complete against the owner's key union. */
-export const ja: LocaleDictOf<'sidebarFiles'> = {
+/** `sidebarFiles` copy in Japanese, keys absent here fall back to English. */
+export const ja: Record<string, string> = {
   'type.label': 'ファイル',
   'guide.title': 'ワークスペースのファイル',
   'guide.description': 'セッションのワークスペース内のファイルを閲覧します',

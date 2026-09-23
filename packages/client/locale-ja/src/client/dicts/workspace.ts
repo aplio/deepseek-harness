@@ -1,10 +1,9 @@
 /** Japanese dictionary for the `workspace` namespace (client/ui-workspace/src/client/locales.ts). */
-import type { LocaleDictOf } from '@deepseek-ai/dsh-client-ui-slots'
 // Type-only: loads the `workspace` key union declared by @deepseek-ai/dsh-client-ui-workspace.
 import type {} from '@deepseek-ai/dsh-client-ui-workspace/client'
 
-/** `workspace` copy in Japanese, complete against the owner's key union. */
-export const ja: LocaleDictOf<'workspace'> = {
+/** `workspace` copy in Japanese, keys absent here fall back to English. */
+export const ja: Record<string, string> = {
   'group.ungrouped': '未分類',
   'session.new': '新規セッション',
   'section.workspaces': 'ワークスペース',

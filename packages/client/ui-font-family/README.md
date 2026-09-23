@@ -9,7 +9,7 @@ English | [中文](README.zh.md)
 
 ## Summary
 
-This package owns the user's font-family preference end to end: a durable settings namespace (`ui-font-family`), a browser scope binding, the two body variables that carry the chosen family, a pre-plugin bootstrap row, and the General settings Font row that edits it. With no stored family the plugin writes nothing and the shipped theme stacks stay untouched; the row applies exactly the family the user names, to UI text and code alike. Disabling the plugin removes the row and the durable namespace without changing any shipped stack.
+This package owns the user's font-family preference end to end: the `fontFamily` field on its own plugin `Config`, a browser config-form binding, the two body variables that carry the chosen family, a pre-plugin bootstrap row, and the General settings Font row that edits it. With no stored family the plugin writes nothing and the shipped theme stacks stay untouched; the row applies exactly the family the user names, to UI text and code alike. Disabling the plugin removes the row and its profile configuration without changing any shipped stack.
 
 ## Table of Contents
 
@@ -42,7 +42,7 @@ The General settings section gains one Font row: a single-line input holding a C
 
 ### Browser half
 
-`apply` binds `ctx.settingsScope` to the namespace, and one effect subscribes to the scope: while the first section is still loading nothing is written (a bootstrap value, when one exists, stands untouched), and after that each accepted section writes the chosen family or retracts both variables. The same effect's disposer retracts both variables, returning the document to the shipped theme stacks. A second effect registers the `settings.font` dictionaries, and the Font row registers into `settings.general.item` (order 12, id `font-family`) with a revision-guarded store mirroring the scope; the injected face normalizes before writing, so invalid text never reaches the wire.
+`apply` binds `ctx.configForms.get('ui-font-family')`, and one effect subscribes to the form: while the first section is still loading nothing is written (a bootstrap value, when one exists, stands untouched), and after that each accepted section writes the chosen family or retracts both variables. The same effect's disposer retracts both variables, returning the document to the shipped theme stacks. A second effect registers the `settings.font` dictionaries, and the Font row registers into `settings.general.item` (order 12, id `font-family`) with a revision-guarded store mirroring the form; the injected face normalizes before writing, so invalid text never reaches the wire. The Host half takes the validated `Config` and answers every index-injection collection with the bootstrap row while a family is configured.
 
 </details>
 
@@ -91,4 +91,4 @@ None.
 
 </details>
 
-**Runtime invariant:** No companion is published. The plugin owns one settings namespace registration, one index-injection contribution, one scope subscription, one slot entry, and one dictionary effect, each disposed with its fiber; the scope snapshot is the only cross-render state and the body variables are its pure projection.
+**Runtime invariant:** No companion is published. The plugin owns one `Config` schema, one settings-page policy, one index-injection contribution, one config-form subscription, one slot entry, and one dictionary effect, each disposed with its fiber; the form snapshot is the only cross-render state and the body variables are its pure projection.

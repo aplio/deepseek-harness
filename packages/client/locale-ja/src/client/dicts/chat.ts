@@ -1,10 +1,9 @@
 /** Japanese dictionary for the `chat` namespace (client/ui-chat/src/client/locale.ts). */
-import type { LocaleDictOf } from '@deepseek-ai/dsh-client-ui-slots'
 // Type-only: loads the `chat` key union declared by @deepseek-ai/dsh-client-ui-chat.
 import type {} from '@deepseek-ai/dsh-client-ui-chat/client'
 
-/** `chat` copy in Japanese, complete against the owner's key union. */
-export const ja: LocaleDictOf<'chat'> = {
+/** `chat` copy in Japanese, keys absent here fall back to English. */
+export const ja: Record<string, string> = {
   'view.chat': 'チャット',
   'number.groupSeparator': ',',
   'duration.compactSeconds': '{seconds}秒',

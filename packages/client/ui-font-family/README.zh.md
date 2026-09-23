@@ -9,7 +9,7 @@ kind: "package-reference"
 
 ## 概述
 
-本包端到端地拥有用户的字体族偏好：持久的设置 namespace（`ui-font-family`）、浏览器侧的 scope 绑定、承载所选字体族的两个 body 变量、插件加载前的引导注入，以及用于编辑它的「一般」设置 Font 行。未保存字体族时插件不写入任何内容，主题随附的字体栈保持原样；设置行只把用户给出的字体族应用到界面文字与代码。停用插件会移除设置行与持久命名空间，但不会改写任何随附字体栈。
+本包端到端地拥有用户的字体族偏好：插件自身 `Config` 上的 `fontFamily` 字段、浏览器侧的 config form 绑定、承载所选字体族的两个 body 变量、插件加载前的引导注入，以及用于编辑它的「一般」设置 Font 行。未保存字体族时插件不写入任何内容，主题随附的字体栈保持原样；设置行只把用户给出的字体族应用到界面文字与代码。停用插件会移除设置行与其 profile 配置，但不会改写任何随附字体栈。
 
 ## 目录
 
@@ -43,7 +43,7 @@ kind: "package-reference"
 
 ### 浏览器半
 
-`apply` 通过 `ctx.settingsScope` 绑定该 namespace，并由一个 effect 订阅 scope：在首个 section 仍在加载时不写入任何内容（已存在的引导值保持不变）；此后每个被接受的 section 要么写入所选字体族，要么移除两个变量。同一 effect 的 disposer 会移除两个变量，使文档回到主题随附的字体栈。第二个 effect 注册 `settings.font` 字典，Font 行则注册进 `settings.general.item`（order 12、id `font-family`），并带一个以 revision 守卫、镜像 scope 的 store；注入面在写入前先做归一化，因此无效文本永远不会上线。
+`apply` 通过 `ctx.configForms.get('ui-font-family')` 绑定该 config form，并由一个 effect 订阅它：在首个 section 仍在加载时不写入任何内容（已存在的引导值保持不变）；此后每个被接受的 section 要么写入所选字体族，要么移除两个变量。同一 effect 的 disposer 会移除两个变量，使文档回到主题随附的字体栈。第二个 effect 注册 `settings.font` 字典，Font 行则注册进 `settings.general.item`（order 12、id `font-family`），并带一个以 revision 守卫、镜像 config form 的 store；注入面在写入前先做归一化，因此无效文本永远不会上线。Host 半接收已校验的 `Config`，并在配置了字体族时用引导行应答每次索引注入收集。
 
 </details>
 
@@ -92,4 +92,4 @@ None.
 
 </details>
 
-**运行时不变式：** 不发布 companion。本插件拥有一个设置 namespace 注册、一项索引注入贡献、一个 scope 订阅、一个 slot 条目与一个字典 effect，全部随 fiber 释放；scope 快照是唯一的跨渲染状态，body 变量是它的纯投影。
+**运行时不变式：** 不发布 companion。本插件拥有一个 `Config` schema、一项设置页策略、一项索引注入贡献、一个 config form 订阅、一个 slot 条目与一个字典 effect，全部随 fiber 释放；config form 快照是唯一的跨渲染状态，body 变量是它的纯投影。

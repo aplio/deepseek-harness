@@ -28,9 +28,9 @@ export type { FontFamilyRowComponentProps, FontFamilyRowInjected } from './FontF
 /**
  * Required services: settings transport plus slots/locale for the Font row.
  * `remote` carries the forwarded settings invalidation that
- * `ctx.settingsScope.bind(spec)` subscribes to on this context.
+ * `ctx.configForms.get(entryId)` subscribes to on this context.
  */
-export const inject = ['slots', 'locale', 'remote', 'settingsScope']
+export const inject = ['slots', 'locale', 'remote', 'configForms']
 
 /**
  * Client plugin body: apply the durable family to the document and register
@@ -39,7 +39,7 @@ export const inject = ['slots', 'locale', 'remote', 'settingsScope']
  * @param ctx - client cordis context.
  */
 export function apply(ctx: ClientContext): void {
-  const host = ctx.settingsScope.bind<FontSettings>({ namespace: FONT_SETTINGS_NAMESPACE })
+  const host = ctx.configForms.get<FontSettings>(FONT_SETTINGS_NAMESPACE)
 
   ctx.effect(() => {
     const paint = (): void => {

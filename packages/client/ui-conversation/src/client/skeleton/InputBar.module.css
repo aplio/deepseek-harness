@@ -76,6 +76,15 @@
   --dsh-scrollbar-thumb-hover: var(--dsw-alias-scrollbar-hover-l2);
 }
 
+/* iOS Safari zooms the page when a focused text surface renders below 16px,
+   which would also shift the composer off screen. A coarse pointer takes the
+   platform minimum, while a larger Settings font-size preference still wins. */
+@media (pointer: coarse) {
+  .card {
+    font-size: max(16px, var(--dsh-content-font-size, 14px));
+  }
+}
+
 /* No-workspace trigger state: an inset 1px dashed outline marks the card as a
    workspace picker rather than a live composer. Keeping the complete stroke
    inside the rounded box prevents clipped corner pixels from reading heavier. */

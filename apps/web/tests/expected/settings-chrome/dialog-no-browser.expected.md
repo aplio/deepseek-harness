@@ -18,12 +18,15 @@
   - text: Font size Only affects conversation content 14
   - button "Increase font size"
   - button "Decrease font size"
-  - text: px Work details Choose how much detail to show for tool calls
+  - text: px Font Applies to UI text and code; leave empty for the browser default
+  - textbox "Font":
+    - /placeholder: e.g. "Hiragino Sans", "Noto Sans JP"
+  - text: Work details Choose how much detail to show for tool calls
   - button "Standard"
   - text: Performance & usage Choose how much performance and usage information to show
   - button "Detailed"
   - text: Developer tools Show tools and information for debugging and troubleshooting
   - switch "Developer tools"
-  - text: Send behavior while busy What Enter and the Send button do while the agent is running; Cmd/Ctrl+Enter uses the other behavior
+  - text: Send behavior while busy Enter inserts a line break; this sets what the Send button and Cmd/Ctrl+Enter do while the agent is running
   - button "Queue"
   - text: "Current version: {{version}}"

@@ -31,7 +31,7 @@ To drop Japanese, remove the `locale-ja` row from the web-app bundle's roster; t
 
 ### Updating a translation
 
-Every dictionary lives in `src/client/dicts/<namespace>.ts` and is declared as `LocaleDictOf<'<namespace>'>` with a type-only import of the owning package. A missing or extra key is a compile error, so an upstream key rename fails this package's build until the translation follows. A namespace the registry gains later surfaces in English until this pack ships a dictionary for it.
+Every dictionary lives in `src/client/dicts/<namespace>.ts`, is declared as `Record<string, string>`, and carries a type-only import of the owning package. The per-locale registration form accepts a partial dictionary, so a key this pack does not carry falls back to English instead of failing the build, and an owner key that disappears leaves an inert entry behind. A namespace the registry gains later surfaces in English until this pack ships a dictionary for it.
 
 ## Understand the implementation
 
@@ -46,7 +46,7 @@ The pack is additive: it never edits the locale registry or another feature pack
 
 ### Dictionary typing
 
-`LocaleDictOf<N>` resolves the exact key union an owning package merged into `LocaleNamespaceMap`, so each dictionary is complete by construction. The type-only import loads the declaring module: the owner's dictionary module when it carries the `LocaleNamespaceMap` declaration itself, otherwise the owner's client entry that loads it (several owners declare it beside the registry, not beside the dictionary). Untyped namespaces registered with the per-locale form — `permission.access` and `directory-browser` — use `Record<string, string>` because their owners never declared a key union.
+The pack registers through the per-locale `ctx.locale.register(ns, 'ja', dict)` form, whose dictionary is untyped: a rename or removal upstream never blocks this package's build, and an untranslated key resolves through the language's declared `en` fallback. The type-only import of the owning package still loads the module that declares the namespace's key set, so the source of each dictionary's key domain stays documented without making completeness a build gate.
 
 ### Source map
 

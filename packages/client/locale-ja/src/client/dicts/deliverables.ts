@@ -1,10 +1,9 @@
 /** Japanese dictionary for the `deliverables` namespace (client/ui-deliverables/src/client/locales.ts). */
-import type { LocaleDictOf } from '@deepseek-ai/dsh-client-ui-slots'
 // Type-only: loads the `deliverables` key union declared by @deepseek-ai/dsh-client-ui-deliverables.
 import type {} from '@deepseek-ai/dsh-client-ui-deliverables/client'
 
-/** `deliverables` copy in Japanese, complete against the owner's key union. */
-export const ja: LocaleDictOf<'deliverables'> = {
+/** `deliverables` copy in Japanese, keys absent here fall back to English. */
+export const ja: Record<string, string> = {
   'presented.nativeUnavailable': 'このファイルには利用可能な Host パスがありません。サイドバーでプレビューしてください',
   'presented.revealError': 'ファイルマネージャーに表示できませんでした。再試行してください',
   'presented.directoryError': '格納先フォルダを開けませんでした。再試行してください',

@@ -1,10 +1,9 @@
 /** Japanese dictionary for the `sidebarPdf` namespace (client/ui-sidebar-documentpreview/src/client/pdf/locales.ts). */
-import type { LocaleDictOf } from '@deepseek-ai/dsh-client-ui-slots'
 // Type-only: loads the `sidebarPdf` key union declared by @deepseek-ai/dsh-client-ui-sidebar-documentpreview.
 import type {} from '@deepseek-ai/dsh-client-ui-sidebar-documentpreview/src/client/pdf/locales.ts'
 
-/** `sidebarPdf` copy in Japanese, complete against the owner's key union. */
-export const ja: LocaleDictOf<'sidebarPdf'> = {
+/** `sidebarPdf` copy in Japanese, keys absent here fall back to English. */
+export const ja: Record<string, string> = {
   'title': 'PDF',
   'pageImage': 'PDF {page} ページ',
   'loading': 'PDF を開いています…',

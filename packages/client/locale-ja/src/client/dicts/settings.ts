@@ -1,10 +1,9 @@
 /** Japanese dictionary for the `settings` namespace (client/ui-settings-general/src/client/locales.ts). */
-import type { LocaleDictOf } from '@deepseek-ai/dsh-client-ui-slots'
 // Type-only: loads the `settings` key union declared by @deepseek-ai/dsh-client-ui-settings-general.
 import type {} from '@deepseek-ai/dsh-client-ui-settings-general/client'
 
-/** `settings` copy in Japanese, complete against the owner's key union. */
-export const ja: LocaleDictOf<'settings'> = {
+/** `settings` copy in Japanese, keys absent here fall back to English. */
+export const ja: Record<string, string> = {
   'trigger': '設定',
   'desktop.update.available': '更新',
   'desktop.update.checking': '更新を確認しています…',

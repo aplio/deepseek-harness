@@ -1,10 +1,9 @@
 /** Japanese dictionary for the `schedule.catalog` namespace (client/ui-schedule/src/client/locales.ts). */
-import type { LocaleDictOf } from '@deepseek-ai/dsh-client-ui-slots'
 // Type-only: loads the `schedule.catalog` key union declared by @deepseek-ai/dsh-client-ui-schedule.
 import type {} from '@deepseek-ai/dsh-client-ui-schedule/client'
 
-/** `schedule.catalog` copy in Japanese, complete against the owner's key union. */
-export const ja: LocaleDictOf<'schedule.catalog'> = {
+/** `schedule.catalog` copy in Japanese, keys absent here fall back to English. */
+export const ja: Record<string, string> = {
   'trigger.one': '{count} 件のリマインダー',
   'trigger.other': '{count} 件のリマインダー',
   'list.aria': '有効なリマインダー',

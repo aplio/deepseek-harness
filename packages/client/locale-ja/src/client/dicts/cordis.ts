@@ -1,10 +1,9 @@
 /** Japanese dictionary for the `cordis` namespace (extensions/ui-cordis/src/client/locales.ts). */
-import type { LocaleDictOf } from '@deepseek-ai/dsh-client-ui-slots'
 // Type-only: loads the `cordis` key union declared by @deepseek-ai/dsh-client-ui-cordis.
 import type {} from '@deepseek-ai/dsh-client-ui-cordis/src/client/locales.ts'
 
-/** `cordis` copy in Japanese, complete against the owner's key union. */
-export const ja: LocaleDictOf<'cordis'> = {
+/** `cordis` copy in Japanese, keys absent here fall back to English. */
+export const ja: Record<string, string> = {
   'row.defineTitle': 'Cordis プラグインを登録',
   'row.runTitle': 'Cordis プラグインを実行',
   'row.updateTitle': 'Cordis プラグインを更新',

@@ -1,10 +1,9 @@
 /** Japanese dictionary for the `session-log-download` namespace (session-query/session-log-export/src/client/locales.ts). */
-import type { LocaleDictOf } from '@deepseek-ai/dsh-client-ui-slots'
 // Type-only: loads the `session-log-download` key union declared by @deepseek-ai/dsh-session-log-export.
 import type {} from '@deepseek-ai/dsh-session-log-export/client'
 
-/** `session-log-download` copy in Japanese, complete against the owner's key union. */
-export const ja: LocaleDictOf<'session-log-download'> = {
+/** `session-log-download` copy in Japanese, keys absent here fall back to English. */
+export const ja: Record<string, string> = {
   'header.more': 'その他の操作',
   'menu.download': 'セッションログをダウンロード',
   'dialog.preparingTitle': 'セッションをエクスポート中',

@@ -1,10 +1,9 @@
 /** Japanese dictionary for the `open-in-app` namespace (client/ui-open-in-app/src/client/locales.ts). */
-import type { LocaleDictOf } from '@deepseek-ai/dsh-client-ui-slots'
 // Type-only: loads the `open-in-app` key union declared by @deepseek-ai/dsh-client-ui-open-in-app.
 import type {} from '@deepseek-ai/dsh-client-ui-open-in-app/client'
 
-/** `open-in-app` copy in Japanese, complete against the owner's key union. */
-export const ja: LocaleDictOf<'open-in-app'> = {
+/** `open-in-app` copy in Japanese, keys absent here fall back to English. */
+export const ja: Record<string, string> = {
   'open.title': 'ワークスペースを {app} で開く',
   'open.tooltip': 'ローカルで開く',
   'open.error': '開けませんでした',

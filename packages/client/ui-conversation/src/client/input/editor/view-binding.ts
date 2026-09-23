@@ -5,6 +5,7 @@ import type { ComposerKeyboard } from '../../contract/draft-editor.ts'
 import type { ComposerBarProps } from '../../contract/slots.ts'
 import type { BusyEnterBehavior } from '../../contract/composer-submission.ts'
 import { resolveSubmitMode } from '../submission-policy.ts'
+import { usesTouchKeyboard } from '../touch-keyboard.ts'
 import { registerComposerKeymap } from './keymap.ts'
 
 interface DraftViewGate {
@@ -132,6 +133,7 @@ export function installDraftKeymap(
       // The chord is the keyboard's only submit gesture, so it resolves the
       // same delivery mode the primary Send button does.
       keyboard.submit(resolveSubmitMode(g.busyEnter, g.running, g.steeringAvailable))
+      dismissTouchKeyboard(editor)
     },
     intakeFiles: (files, directories) => { gate.current.intakeFiles(files, directories) },
     pasteText: (text) => {
@@ -149,4 +151,15 @@ export function installDraftKeymap(
 export function keepDraftFocus(event: MouseEvent<HTMLButtonElement>, editor: LexicalEditor | null): void {
   event.preventDefault()
   editor?.getRootElement()?.focus({ preventScroll: true })
+}
+
+/**
+ * Drop the composer's focus after a submit on a touch device, so the on-screen
+ * keyboard closes instead of covering the answer. Pointer devices keep the
+ * caret where the draft left it.
+ * @param editor - the borrowed editor, absent in the inert view.
+ */
+export function dismissTouchKeyboard(editor: LexicalEditor | null): void {
+  if (editor === null || !usesTouchKeyboard()) return
+  editor.blur()
 }

@@ -1,10 +1,9 @@
 /** Japanese dictionary for the `settings.permission` namespace (client/ui-permission-presets/src/client/locales.ts). */
-import type { LocaleDictOf } from '@deepseek-ai/dsh-client-ui-slots'
 // Type-only: loads the `settings.permission` key union declared by @deepseek-ai/dsh-client-ui-permission-presets.
 import type {} from '@deepseek-ai/dsh-client-ui-permission-presets/client'
 
-/** `settings.permission` copy in Japanese, complete against the owner's key union. */
-export const ja: LocaleDictOf<'settings.permission'> = {
+/** `settings.permission` copy in Japanese, keys absent here fall back to English. */
+export const ja: Record<string, string> = {
   'title': '権限',
   'description': '新規セッションのデフォルト権限モードを選択します',
   'loading': '読み込み中',

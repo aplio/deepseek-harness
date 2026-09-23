@@ -1145,7 +1145,7 @@ importers:
         specifier: workspace:*
         version: link:../workspace-files
       '@deepseek-ai/dsh-api-workspace-git':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../workspace-git
       '@deepseek-ai/dsh-client-connection':
         specifier: workspace:*
@@ -2361,7 +2361,7 @@ importers:
         specifier: workspace:*
         version: link:../../api/workspace-files
       '@deepseek-ai/dsh-api-workspace-git':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../api/workspace-git
       '@deepseek-ai/dsh-app-boot':
         specifier: workspace:*
@@ -2379,7 +2379,7 @@ importers:
         specifier: workspace:*
         version: link:../../client/locale
       '@deepseek-ai/dsh-client-locale-ja':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../client/locale-ja
       '@deepseek-ai/dsh-client-modules':
         specifier: workspace:*
@@ -2421,10 +2421,10 @@ importers:
         specifier: workspace:*
         version: link:../../client/ui-directory-picker-native
       '@deepseek-ai/dsh-client-ui-font-family':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../client/ui-font-family
       '@deepseek-ai/dsh-client-ui-git-branch':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../client/ui-git-branch
       '@deepseek-ai/dsh-client-ui-goal':
         specifier: workspace:*
@@ -3808,7 +3808,7 @@ importers:
         version: link:../../settings/settings
       '@testing-library/react':
         specifier: ^16.1.0
-        version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@18.3.7(@types/react@18.3.31))(@types/react@18.3.31)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        version: 16.3.2(@testing-library/dom@10.4.2)(@types/react-dom@18.3.7(@types/react@18.3.31))(@types/react@18.3.31)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@types/react':
         specifier: ~18.3.1
         version: 18.3.31
@@ -3865,7 +3865,7 @@ importers:
         version: link:../../core/session
       '@testing-library/react':
         specifier: ^16.1.0
-        version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@18.3.7(@types/react@18.3.31))(@types/react@18.3.31)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        version: 16.3.2(@testing-library/dom@10.4.2)(@types/react-dom@18.3.7(@types/react@18.3.31))(@types/react@18.3.31)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@types/react':
         specifier: ~18.3.1
         version: 18.3.31

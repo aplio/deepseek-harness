@@ -1034,7 +1034,7 @@ describe('WorkspaceBrowser', () => {
       })
       const names = () => screen.getAllByRole('treeitem')
         .filter(row => row.getAttribute('aria-expanded') === null)
-        .map(row => row.querySelector('[class*="title"]')?.textContent)
+        .map(row => row.querySelector('[class*="_title_"]')?.textContent)
       expect(names()).toEqual(['p', 'q', 'a', 'b', 'c'])
       expect(b.store.getSnapshot().sessionOrderByAccount[account]).toEqual(saved)
 
@@ -1081,7 +1081,7 @@ describe('WorkspaceBrowser', () => {
     expect(screen.queryByRole('treeitem')).toBeNull()
     expect(b.store.getSnapshot().sessionOrderByAccount[FLAT_SESSION_ORDER_KEY]).toEqual(['c', 'a', 'b'])
     act(() => { b.store.actions.setArchivedFilter('default') })
-    expect(screen.getAllByRole('treeitem').map(row => row.querySelector('[class*="title"]')?.textContent))
+    expect(screen.getAllByRole('treeitem').map(row => row.querySelector('[class*="_title_"]')?.textContent))
       .toEqual(['c', 'a', 'b'])
   })
 

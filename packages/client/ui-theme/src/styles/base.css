@@ -18,3 +18,19 @@
   --ds-transition-duration-fast: 0.1s;
   --ds-transition-duration-slow: 0.3s;
 }
+
+/* iOS Safari zooms the page when a focused text control renders below 16px,
+   which pushes the layout off screen. A coarse pointer therefore takes the
+   platform minimum for every native text control and rich-text surface; the
+   `1em` term keeps a deliberately larger inherited size (the composer's
+   Settings font-size preference) instead of clamping it down. `!important` is
+   required because component sheets set their own sizes through class
+   selectors, and any size below the floor still triggers the zoom. Buttons,
+   selects, and non-text input types keep their own sizing. */
+@media (pointer: coarse) {
+  input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='file']):not([type='color']):not([type='submit']):not([type='button']):not([type='reset']),
+  textarea,
+  [contenteditable='true'] {
+    font-size: max(16px, 1em) !important;
+  }
+}

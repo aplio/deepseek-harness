@@ -1,10 +1,9 @@
 /** Japanese dictionary for the `job` namespace (client/ui-jobs/src/client/locales.ts). */
-import type { LocaleDictOf } from '@deepseek-ai/dsh-client-ui-slots'
 // Type-only: loads the `job` key union declared by @deepseek-ai/dsh-client-ui-jobs.
 import type {} from '@deepseek-ai/dsh-client-ui-jobs/client'
 
-/** `job` copy in Japanese, complete against the owner's key union. */
-export const ja: LocaleDictOf<'job'> = {
+/** `job` copy in Japanese, keys absent here fall back to English. */
+export const ja: Record<string, string> = {
   'count.live.one': '{count} 件のバックグラウンドジョブを実行中',
   'count.live.other': '{count} 件のバックグラウンドジョブを実行中',
   'count.idle.one': '{count} 件のバックグラウンドジョブ',

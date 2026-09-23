@@ -569,8 +569,8 @@ describe('web e2e: settings modal and General preferences', () => {
       await dialog.waitFor({ timeout: 10_000 })
       return dialog
     }
-    const settingsYaml = async (): Promise<string> =>
-      await readFile(join(scaffold.harnessHome, 'settings.yaml'), 'utf8')
+    const profilePatch = async (): Promise<string> =>
+      await readFile(join(scaffold.harnessHome, 'profiles', 'scaffold', 'cordis.patch.yml'), 'utf8')
 
     const dialog = await openDialog()
     const input = dialog.getByRole('textbox', { name: '字体' })
@@ -579,7 +579,7 @@ describe('web e2e: settings modal and General preferences', () => {
     await expect.poll(() => readFontVariable('--dsw-font-family'), { timeout: 5_000 })
       .toBe('"Hiragino Sans", "Noto Sans JP"')
     expect(await readFontVariable('--ds-font-family-code')).toBe('"Hiragino Sans", "Noto Sans JP"')
-    await expect.poll(settingsYaml, { timeout: 5_000 }).toMatch(/fontFamily: .*Hiragino Sans/)
+    await expect.poll(profilePatch, { timeout: 5_000 }).toMatch(/fontFamily: .*Hiragino Sans/)
     await page.keyboard.press('Escape')
 
     // The boot script embeds the durable override: the first paint after
@@ -598,7 +598,7 @@ describe('web e2e: settings modal and General preferences', () => {
     await cleared.press('Enter')
     await expect.poll(() => readFontVariable('--dsw-font-family'), { timeout: 5_000 }).toBe('')
     expect(await readFontVariable('--ds-font-family-code')).toBe('')
-    await expect.poll(settingsYaml, { timeout: 5_000 }).not.toMatch(/fontFamily/)
+    await expect.poll(profilePatch, { timeout: 5_000 }).not.toMatch(/fontFamily/)
     await page.keyboard.press('Escape')
     expect(tripwire.pageErrors).toEqual([])
   }, 90_000)

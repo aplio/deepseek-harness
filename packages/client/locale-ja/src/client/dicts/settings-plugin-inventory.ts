@@ -1,10 +1,9 @@
 /** Japanese dictionary for the `settings.pluginInventory` namespace (client/ui-settings-plugin-inventory/src/client/locales.ts). */
-import type { LocaleDictOf } from '@deepseek-ai/dsh-client-ui-slots'
 // Type-only: loads the `settings.pluginInventory` key union declared by @deepseek-ai/dsh-client-ui-settings-plugin-inventory.
 import type {} from '@deepseek-ai/dsh-client-ui-settings-plugin-inventory/client'
 
-/** `settings.pluginInventory` copy in Japanese, complete against the owner's key union. */
-export const ja: LocaleDictOf<'settings.pluginInventory'> = {
+/** `settings.pluginInventory` copy in Japanese, keys absent here fall back to English. */
+export const ja: Record<string, string> = {
   'tab': 'プラグイン一覧',
   'loading': 'プラグインを読み込み中…',
   'clientSyncing': 'このページのプラグインを同期しています…',

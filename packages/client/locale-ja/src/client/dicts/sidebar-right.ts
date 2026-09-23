@@ -1,10 +1,9 @@
 /** Japanese dictionary for the `sidebarRight` namespace (client/ui-sidebar-right/src/client/locales.ts). */
-import type { LocaleDictOf } from '@deepseek-ai/dsh-client-ui-slots'
 // Type-only: loads the `sidebarRight` key union declared by @deepseek-ai/dsh-client-ui-sidebar-right.
 import type {} from '@deepseek-ai/dsh-client-ui-sidebar-right/client'
 
-/** `sidebarRight` copy in Japanese, complete against the owner's key union. */
-export const ja: LocaleDictOf<'sidebarRight'> = {
+/** `sidebarRight` copy in Japanese, keys absent here fall back to English. */
+export const ja: Record<string, string> = {
   'chrome.expand': 'サイドバーを開く',
   'chrome.expandAria': '右サイドバーを開く',
   'chrome.collapse': 'サイドバーを折りたたむ',

@@ -4,7 +4,7 @@
  * plugin owns only the page poll and the presentation.
  */
 
-import { IconDownloadOutline16, Tooltip } from '@deepseek-ai/dsh-client-ui-primitives'
+import { IconDownloadOutlineRegular, Tooltip } from '@deepseek-ai/dsh-client-ui-primitives'
 import type { ObservableSnapshot } from '@deepseek-ai/dsh-client-store'
 import type { WorkspaceGitUpstream } from '@deepseek-ai/dsh-api-workspace-git/types'
 import type { InjectFace, PropsLocale, PropsRuntime } from '@deepseek-ai/dsh-client-ui-slots'
@@ -43,7 +43,7 @@ export function UpstreamBadge({ useUpstream, t }: UpstreamBadgeProps) {
   return (
     <Tooltip label={label} side="right" delayMs={500}>
       <span className={css.badge} role="img" aria-label={label}>
-        <IconDownloadOutline16 />
+        <IconDownloadOutlineRegular />
         {upstream.count === null ? null : <span className={css.count}>{upstream.count}</span>}
       </span>
     </Tooltip>

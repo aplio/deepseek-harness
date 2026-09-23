@@ -1,10 +1,9 @@
 /** Japanese dictionary for the `agent-team` namespace (experimental/client-ui-agent-team/src/client/locales.ts). */
-import type { LocaleDictOf } from '@deepseek-ai/dsh-client-ui-slots'
 // Type-only: loads the `agent-team` key union declared by @deepseek-ai/dsh-experimental-client-ui-agent-team.
 import type {} from '@deepseek-ai/dsh-experimental-client-ui-agent-team/client'
 
-/** `agent-team` copy in Japanese, complete against the owner's key union. */
-export const ja: LocaleDictOf<'agent-team'> = {
+/** `agent-team` copy in Japanese, keys absent here fall back to English. */
+export const ja: Record<string, string> = {
   'trigger': 'Agent Team',
   'refresh': 'Team を更新',
   'close': '閉じる',
