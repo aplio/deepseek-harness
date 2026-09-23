@@ -15,7 +15,7 @@
       "path": "../ui-slots"
     },
     {
-      "path": "../locale"
+      "path": "../locale/tsconfig.client.json"
     },
     {
       "path": "../ui-agent-preset"
@@ -24,13 +24,13 @@
       "path": "../ui-approval"
     },
     {
-      "path": "../ui-chat"
+      "path": "../ui-chat/tsconfig.client.json"
     },
     {
       "path": "../ui-commands"
     },
     {
-      "path": "../ui-conversation"
+      "path": "../ui-conversation/tsconfig.client.json"
     },
     {
       "path": "../../extensions/ui-cordis"
@@ -42,7 +42,7 @@
       "path": "../ui-git-branch"
     },
     {
-      "path": "../ui-font-family"
+      "path": "../ui-font-family/tsconfig.client.json"
     },
     {
       "path": "../ui-goal"
@@ -75,7 +75,7 @@
       "path": "../ui-schedule"
     },
     {
-      "path": "../ui-settings-general"
+      "path": "../ui-settings-general/tsconfig.client.json"
     },
     {
       "path": "../ui-settings-models"
@@ -105,7 +105,7 @@
       "path": "../ui-subagent"
     },
     {
-      "path": "../ui-theme"
+      "path": "../ui-theme/tsconfig.client.json"
     },
     {
       "path": "../ui-trajectory"

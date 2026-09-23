@@ -14,7 +14,7 @@ interface DraftViewGate {
   running: boolean
   steeringAvailable: boolean
   busyEnter: BusyEnterBehavior
-  intakeFiles: (files: readonly File[]) => void
+  intakeFiles: (files: readonly File[], directories?: ReadonlySet<File>) => void
   uploadsPending: boolean
   showToast: (text: string) => void
   t: ComposerBarProps['t']
@@ -133,7 +133,7 @@ export function installDraftKeymap(
       // same delivery mode the primary Send button does.
       keyboard.submit(resolveSubmitMode(g.busyEnter, g.running, g.steeringAvailable))
     },
-    intakeFiles: (files) => { gate.current.intakeFiles(files) },
+    intakeFiles: (files, directories) => { gate.current.intakeFiles(files, directories) },
     pasteText: (text) => {
       if (gate.current.machineBusy || gate.current.locked) return
       keyboard.paste(text)

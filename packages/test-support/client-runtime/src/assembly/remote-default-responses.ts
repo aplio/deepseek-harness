@@ -13,6 +13,8 @@ export const remoteDefaultResponses: RemoteTable = {
   unary: {
     // api-session-controller `sessions.handleConnected()` on `connection/reset`.
     'session/list': ok({ items: [] }),
+    // ui-workspace startup with no entries; first-use initialization is ineligible.
+    'workspace/initializeDefault': ok(undefined),
     // ui-settings `mirror.ensure()` at apply and again on `connection/reset`.
     'settings/describe': ok({ writable: true, hasDocument: false, namespaces: [] }),
     // ui-model-selection `ModelDirectoryResolver` constructor.
@@ -23,7 +25,7 @@ export const remoteDefaultResponses: RemoteTable = {
       failures: [],
     }),
     // ui-agent-preset hero chip and header label on first mount.
-    'agentPresets/list': ok({ presets: [], authorable: false }),
+    'agentPresets/list': ok({ presets: [], modeSelectionEnabled: true }),
     // cordis-client-runner `ClientCordisInspectRegistry.sync` at apply and on `connection/reset`.
     'dynamicCordisRunner/syncInspectManifest': ok(null),
     // ui-cordis inventory at apply and on `connection/reset`.
@@ -32,6 +34,9 @@ export const remoteDefaultResponses: RemoteTable = {
     'credentials/describe': ok({}),
     // ui-permission-presets `PermissionCatalogDirectory` on its first read for a connection generation.
     'permissionPresets/catalog': ok({ options: [] }),
+    // ui-settings-account refreshes details after a stored-grant snapshot.
+    'account/getProfile': ok(null),
+    'account/getBalance': ok(null),
     // ui-git-branch composer chip for the first Session whose input bar mounts; fixture directories are not checkouts.
     'workspaceGit/status': ok({ kind: 'none' }),
     // ui-git-branch brand-row badge on plugin activation; the test installation is not a checkout.
@@ -44,8 +49,10 @@ export const remoteDefaultResponses: RemoteTable = {
   ],
   stream: {
     // api-session-controller client `apply`: the control stream's opening baseline, then open.
-    'session/control': openStream([{ type: 'baseline', value: { jobs: {}, projections: {} } }]),
+    'session/control': openStream([{ type: 'baseline', value: { projections: {} } }]),
+    // ui-settings-account shares the account snapshot across settings and the sidebar menu.
+    'account/watch': openStream([{ status: 'signed-out', attempt: null, links: { usageUrl: 'https://platform.deepseek.com/usage', topUpUrl: 'https://platform.deepseek.com/top_up' } }]),
     // api-workspace-controller client `apply`: the follow stream's opening baseline, then open.
-    'workspace/follow': openStream([{ type: 'baseline', value: { items: [], archivedSessionIds: [] } }]),
+    'workspace/follow': openStream([{ type: 'baseline', value: { items: [], archivedSessionIds: [], pinnedSessionIds: [] } }]),
   },
 }

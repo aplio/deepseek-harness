@@ -16,6 +16,7 @@ afterEach(cleanup)
 beforeEach(() => { localStorage.removeItem('dsh.risk-acknowledged.danger-full-access') })
 
 const CATALOG: PermissionCatalog = {
+  defaultPreset: 'read-only', defaultOptions: [{ value: 'read-only', name: 'read-only' }, { value: 'workspace-write', name: 'workspace-write' }, { value: 'danger-full-access', name: 'danger-full-access' }],
   options: [
     { value: 'read-only', name: 'read-only' },
     { value: 'workspace-write', name: 'workspace-write' },
@@ -94,6 +95,7 @@ describe('PermissionSelect', () => {
 
   it('preserves host labels and ignores the already-current row', () => {
     const catalog: PermissionCatalog = {
+      defaultPreset: 'read-only', defaultOptions: [{ value: 'read-only', name: 'read-only' }, { value: 'workspace-write', name: 'workspace-write' }, { value: 'danger-full-access', name: 'danger-full-access' }],
       options: [
         { value: 'workspace-write', name: 'Project Files' },
         { value: 'danger-full-access', name: 'Operator Mode' },
@@ -192,7 +194,7 @@ describe('PermissionSelect', () => {
   it('revokes Auto confirmation and its optimistic label when the catalog withdraws it', async () => {
     const submitted = Promise.withResolvers<boolean>()
     const { catalog, select, selection } = setup({ select: () => submitted.promise })
-    const withoutAuto = { options: CATALOG.options.filter(option => option.value !== 'auto') }
+    const withoutAuto = { ...CATALOG, options: CATALOG.options.filter(option => option.value !== 'auto') }
     const chooseAuto = () => {
       fireEvent.click(trigger())
       fireEvent.click(screen.getByRole('menuitem', { name: 'Auto review EXP' }))

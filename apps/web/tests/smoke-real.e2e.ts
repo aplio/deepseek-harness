@@ -356,13 +356,13 @@ describe('dsh web keyless CLI smoke', () => {
       await page.goto(readyUrl)
       await page.getByRole('button', { name: 'New session', exact: true }).first().waitFor({ timeout: 30_000 })
       const batchPaths = [...new Set(pluginScripts)].sort()
-      // The application roster partitions into combo URLs by the protocol byte
-      // limit, so the fork's added plugins take the boot to three requests:
-      // one bootstrap plus two application batches.
+      // The bootstrap phase is the modules package alone; the application phase
+      // spans two combos because its map-form URL is over the 3 KiB combo limit
+      // since the four settings companions joined the composition.
       expect(batchPaths).toHaveLength(3)
-      expect(batchPaths).toContainEqual(expect.stringMatching(
-        /^\/plugins\/\?\?.+\/client\.js,.+\/client\.js&rev=[a-f\d]{12}$/,
-      ))
+      expect(batchPaths.filter(path => (
+        /^\/plugins\/\?\?.+\/client\.js,.+\/client\.js&rev=[a-f\d]{12}$/.test(path)
+      ))).toHaveLength(2)
       expect(batchPaths).toContainEqual(expect.stringMatching(
         /^\/plugins\/\?\?@deepseek-ai\/dsh-client-modules\/client\.js&rev=[a-f\d]{12}$/,
       ))
