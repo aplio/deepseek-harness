@@ -25,8 +25,11 @@
   - button "标准"
   - text: 性能与用量 选择性能与用量信息展示的详细程度
   - button "详细"
-  - text: 开发者工具 显示用于调试和排查问题的工具与信息
-  - switch "开发者工具"
+  - text: 代码工作工具 开启后显示轨迹、本轮代码差异，新对话中的 Agent 预设切换
+  - switch "代码工作工具"
+  - text: 快捷键
+  - paragraph: 查看和编辑当前可用的快捷键和输入操作
+  - button "编辑快捷键"
   - text: 繁忙时的发送行为 Enter 换行；此处设置智能体运行时发送按钮与 Cmd/Ctrl+Enter 的行为
   - button "排队发送"
   - text: 当前版本：{{version}}

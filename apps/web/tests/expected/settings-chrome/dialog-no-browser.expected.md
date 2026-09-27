@@ -25,8 +25,11 @@
   - button "Standard"
   - text: Performance & usage Choose how much performance and usage information to show
   - button "Detailed"
-  - text: Developer tools Show tools and information for debugging and troubleshooting
-  - switch "Developer tools"
+  - text: Coding Tools Shows trajectory, code diffs, and Agent preset switching in new chats
+  - switch "Coding Tools"
+  - text: Keyboard shortcuts
+  - paragraph: View and edit available shortcuts and input actions
+  - button "Edit shortcuts"
   - text: Send behavior while busy Enter inserts a line break; this sets what the Send button and Cmd/Ctrl+Enter do while the agent is running
   - button "Queue"
   - text: "Current version: {{version}}"

@@ -1,6 +1,22 @@
-# Bilingual-pair consistency record (docs/i18n/README.md): the git blob hash of each
-# side as of the last confirmed-consistent state. Both languages carry equal authority;
-# after editing either side, bring the other along and re-record with:
+# Bilingual-pair consistency record for 2026-09-20-web-once-per-browser-notices.md (docs/i18n/README.md): per heading
+# section, a hash of its English and Chinese blocks outside code blocks and generated regions.
+# After editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/feature/2026-09-20-web-once-per-browser-notices.md
-2026-09-20-web-once-per-browser-notices.md: 34036db190f2744fc6ac3d9322dc05865e2f725c
-2026-09-20-web-once-per-browser-notices.zh.md: 95539860211505192cb3b01dcacf1157c8fb8278
+/agent-note-web-notices-the-user-answers-once-per-browser:
+  en: e9369f8613f5b9e7
+  zh: 19731a27063b1a0e
+/agent-note-web-notices-the-user-answers-once-per-browser/problem:
+  en: f926fc294d99a07f
+  zh: 77942bf5ddeeceaf
+/agent-note-web-notices-the-user-answers-once-per-browser/decision:
+  en: 726d417206b937d1
+  zh: 3172da7cd5a2c41a
+/agent-note-web-notices-the-user-answers-once-per-browser/verification:
+  en: df98f61eb765f2bf
+  zh: 4d861f6170f7a79a
+/agent-note-web-notices-the-user-answers-once-per-browser/alternatives-considered:
+  en: cd3f2a48a8b7ef5a
+  zh: 093f0666f3d47716
+/agent-note-web-notices-the-user-answers-once-per-browser/consequences:
+  en: 07957414bfe93cd6
+  zh: 02a3e2e85ca4b4ca

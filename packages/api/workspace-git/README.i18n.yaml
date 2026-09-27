@@ -1,6 +1,43 @@
-# Bilingual-pair consistency record (docs/i18n/README.md): the git blob hash of each
-# side as of the last confirmed-consistent state. Both languages carry equal authority;
-# after editing either side, bring the other along and re-record with:
+# Bilingual-pair consistency record for README.md (docs/i18n/README.md): per heading
+# section, a hash of its English and Chinese blocks outside code blocks and generated regions.
+# After editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write packages/api/workspace-git/README.md
-README.md: 44345c2e644f75d47931d6c299ddfeeb3b355287
-README.zh.md: 68d070b1bc0dac1ec970232a4455657cac86485a
+/:
+  en: 04ba8d6d12745f47
+  zh: 30aa744ba11dbada
+/deepseek-ai-dsh-api-workspace-git:
+  en: 6a1ab36b7e516d45
+  zh: 93531146eb8c909e
+/deepseek-ai-dsh-api-workspace-git/summary:
+  en: 2c924849d22312c5
+  zh: 1a010ec6c5553941
+/deepseek-ai-dsh-api-workspace-git/table-of-contents:
+  en: d152484eb41ac6b4
+  zh: 09388d293f9be9cb
+/deepseek-ai-dsh-api-workspace-git/use-this-package:
+  en: a54ec19503784021
+  zh: 4eeac1e4f2189d9d
+/deepseek-ai-dsh-api-workspace-git/use-this-package/configuration:
+  en: 6d970db3b6823460
+  zh: d22cd2bf2789977b
+/deepseek-ai-dsh-api-workspace-git/use-this-package/what-to-expect:
+  en: c54ad727578c82a5
+  zh: de16843ebdf4b9a9
+/deepseek-ai-dsh-api-workspace-git/understand-the-implementation:
+  en: 240a7105bbb6fe5f
+  zh: 61276c9f360e1210
+/deepseek-ai-dsh-api-workspace-git/further-exploration:
+  en: f84f9d5c8e3d3661
+  zh: f43b570d10dc9a06
+/deepseek-ai-dsh-api-workspace-git/model-experience:
+  en: 62dcfab8730da564
+  zh: b51ba74012fc17cd
+/deepseek-ai-dsh-api-workspace-git/model-experience/kv-cache-effect:
+  en: f98d46361f56b365
+  zh: a13980e31380d4bb
+/deepseek-ai-dsh-api-workspace-git/known-limitations-and-deferred-work:
+  en: ac001d0b428ef8b5
+  zh: e0aab7cf0aa30aa4
+/deepseek-ai-dsh-api-workspace-git/known-limitations-and-deferred-work/dev-note:
+  en: c36f95581a89b015
+  zh: 7c7fa1653f22dbcb

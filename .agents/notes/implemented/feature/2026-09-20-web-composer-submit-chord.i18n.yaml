@@ -1,6 +1,22 @@
-# Bilingual-pair consistency record (docs/i18n/README.md): the git blob hash of each
-# side as of the last confirmed-consistent state. Both languages carry equal authority;
-# after editing either side, bring the other along and re-record with:
+# Bilingual-pair consistency record for 2026-09-20-web-composer-submit-chord.md (docs/i18n/README.md): per heading
+# section, a hash of its English and Chinese blocks outside code blocks and generated regions.
+# After editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/feature/2026-09-20-web-composer-submit-chord.md
-2026-09-20-web-composer-submit-chord.md: 126e89be9153861a0e146d162a37ee46742d30bc
-2026-09-20-web-composer-submit-chord.zh.md: e6e7a52b5de7d70455ed7193deed92d80efd91c1
+/agent-note-the-web-composer-submits-on-cmd-ctrl-enter:
+  en: 91ebc59ce74ddb10
+  zh: 9485d1a9da915883
+/agent-note-the-web-composer-submits-on-cmd-ctrl-enter/problem:
+  en: f2fc3d84c3393f15
+  zh: 9bf4966404c3c803
+/agent-note-the-web-composer-submits-on-cmd-ctrl-enter/decision:
+  en: 07405384de88510f
+  zh: 2b591929d4de6cc2
+/agent-note-the-web-composer-submits-on-cmd-ctrl-enter/verification:
+  en: 22923cf63858ab37
+  zh: 61b9075c7b40c498
+/agent-note-the-web-composer-submits-on-cmd-ctrl-enter/alternatives-considered:
+  en: d51b80d723d6c506
+  zh: 694dabe173df08d3
+/agent-note-the-web-composer-submits-on-cmd-ctrl-enter/consequences:
+  en: a54d8df0f802f69c
+  zh: 2cda52043b831772

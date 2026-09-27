@@ -1,6 +1,22 @@
-# Bilingual-pair consistency record (docs/i18n/README.md): the git blob hash of each
-# side as of the last confirmed-consistent state. Both languages carry equal authority;
-# after editing either side, bring the other along and re-record with:
+# Bilingual-pair consistency record for 2026-09-20-web-installation-upstream-badge.md (docs/i18n/README.md): per heading
+# section, a hash of its English and Chinese blocks outside code blocks and generated regions.
+# After editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/feature/2026-09-20-web-installation-upstream-badge.md
-2026-09-20-web-installation-upstream-badge.md: 5161859a4c8dfc2d10a7a64b6c43c7cd3c109ef1
-2026-09-20-web-installation-upstream-badge.zh.md: 57be247127a5f0eb3dd63fa106dd35f5401b0a8c
+/agent-note-the-web-sidebar-reports-when-the-running-checkout-is-behind-its-fork-origin:
+  en: 9fd735be61edaff9
+  zh: c49ff1be475bc30c
+/agent-note-the-web-sidebar-reports-when-the-running-checkout-is-behind-its-fork-origin/problem:
+  en: 623d00490e02b7e3
+  zh: bac43650ef419922
+/agent-note-the-web-sidebar-reports-when-the-running-checkout-is-behind-its-fork-origin/decision:
+  en: 2e2a0cba3994b913
+  zh: 3d774659b2c08b09
+/agent-note-the-web-sidebar-reports-when-the-running-checkout-is-behind-its-fork-origin/verification:
+  en: bfda6ac489c476e1
+  zh: 6587030b6409132f
+/agent-note-the-web-sidebar-reports-when-the-running-checkout-is-behind-its-fork-origin/alternatives-considered:
+  en: ca85afb033b46fdb
+  zh: 09b2625a2be355aa
+/agent-note-the-web-sidebar-reports-when-the-running-checkout-is-behind-its-fork-origin/consequences:
+  en: 723725f7c2e8b388
+  zh: 221af8c0fd702a66

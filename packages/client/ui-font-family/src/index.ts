@@ -17,7 +17,9 @@ export interface Config {
 
 /** Live font preference. */
 export const Config = z.object({
-  [FONT_FAMILY_FIELD]: FontSettingsFields[FONT_FAMILY_FIELD].volatile(),
+  // Literal key: the config catalog cross-checks every schema-validated path
+  // against the declared Config type, and a computed key is not resolvable.
+  fontFamily: FontSettingsFields[FONT_FAMILY_FIELD].volatile(),
 })
 
 /**

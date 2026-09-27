@@ -1,6 +1,22 @@
-# Bilingual-pair consistency record (docs/i18n/README.md): the git blob hash of each
-# side as of the last confirmed-consistent state. Both languages carry equal authority;
-# after editing either side, bring the other along and re-record with:
+# Bilingual-pair consistency record for 2026-09-15-japanese-ui-language-pack-and-font-setting.md (docs/i18n/README.md): per heading
+# section, a hash of its English and Chinese blocks outside code blocks and generated regions.
+# After editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/feature/2026-09-15-japanese-ui-language-pack-and-font-setting.md
-2026-09-15-japanese-ui-language-pack-and-font-setting.md: 112c1dfc0fc7c578385905c3994d42e9789fd0a6
-2026-09-15-japanese-ui-language-pack-and-font-setting.zh.md: eef80c8f4079fe38dc4e190456e262536b59f8fc
+/agent-note-japanese-ui-support-ja-language-pack-and-font-family-plugin:
+  en: 33f8ed52c2b33689
+  zh: d0ff5eb92b943d7a
+/agent-note-japanese-ui-support-ja-language-pack-and-font-family-plugin/problem:
+  en: 2e7aa98d6ddf81e1
+  zh: 4980e88c72220991
+/agent-note-japanese-ui-support-ja-language-pack-and-font-family-plugin/decision:
+  en: ec2af23e4458cc68
+  zh: 4ce2cbbb01f4b930
+/agent-note-japanese-ui-support-ja-language-pack-and-font-family-plugin/alternatives-considered:
+  en: 183676aeeb826332
+  zh: 9c2c21f9c70a1e3b
+/agent-note-japanese-ui-support-ja-language-pack-and-font-family-plugin/consequences:
+  en: 80c3cbb8322967c8
+  zh: 636119630a47c712
+/agent-note-japanese-ui-support-ja-language-pack-and-font-family-plugin/testing:
+  en: 020e133befc0f95c
+  zh: e641553df6d77080

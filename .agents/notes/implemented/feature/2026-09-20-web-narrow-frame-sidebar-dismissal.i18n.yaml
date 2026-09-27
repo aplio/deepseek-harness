@@ -1,6 +1,22 @@
-# Bilingual-pair consistency record (docs/i18n/README.md): the git blob hash of each
-# side as of the last confirmed-consistent state. Both languages carry equal authority;
-# after editing either side, bring the other along and re-record with:
+# Bilingual-pair consistency record for 2026-09-20-web-narrow-frame-sidebar-dismissal.md (docs/i18n/README.md): per heading
+# section, a hash of its English and Chinese blocks outside code blocks and generated regions.
+# After editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/feature/2026-09-20-web-narrow-frame-sidebar-dismissal.md
-2026-09-20-web-narrow-frame-sidebar-dismissal.md: e9b53433ec526a134159f369c7ffdfc5f6971e59
-2026-09-20-web-narrow-frame-sidebar-dismissal.zh.md: 84d8f8338c65950c5801da68fe2835a52bdd04b8
+/agent-note-the-narrow-frame-sidebar-dismisses-itself-on-navigation:
+  en: 5d1734905a6e0a27
+  zh: ab8e92d39b3e519f
+/agent-note-the-narrow-frame-sidebar-dismisses-itself-on-navigation/problem:
+  en: 7e4283c7ade7490e
+  zh: b5744831e72e645b
+/agent-note-the-narrow-frame-sidebar-dismisses-itself-on-navigation/decision:
+  en: 27ca52c9ea731b16
+  zh: 4d9dffa2754a430a
+/agent-note-the-narrow-frame-sidebar-dismisses-itself-on-navigation/verification:
+  en: 639dfb933644d1b3
+  zh: 2c01d4352d603d42
+/agent-note-the-narrow-frame-sidebar-dismisses-itself-on-navigation/alternatives-considered:
+  en: 4527e934385ccc60
+  zh: a25c4cc6a372b0db
+/agent-note-the-narrow-frame-sidebar-dismisses-itself-on-navigation/consequences:
+  en: d83db717fc124dde
+  zh: 669176ecc41ba0ed
