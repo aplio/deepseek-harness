@@ -87,8 +87,9 @@ health() {
 
 switch_to() {
   # $1: release directory to make current; the old current becomes previous.
-  local old
-  old="$(readlink -f "$ROOT/current" 2>/dev/null || true)"
+  local old=""
+  # readlink -f prints a missing path as-is, so test for the link before resolving it.
+  [[ -L "$ROOT/current" ]] && old="$(readlink -f "$ROOT/current")"
   if [[ -n "$old" && "$old" != "$(readlink -f "$1")" ]]; then
     ln -sfn "$old" "$ROOT/previous.next"
     mv -Tf "$ROOT/previous.next" "$ROOT/previous"
@@ -184,9 +185,10 @@ release() {
 }
 
 rollback_now() {
-  local previous
-  previous="$(readlink -f "$ROOT/previous" 2>/dev/null || true)"
-  [[ -n "$previous" && -d "$previous" ]] || die "no previous release to roll back to"
+  local previous=""
+  [[ -L "$ROOT/previous" ]] && previous="$(readlink -f "$ROOT/previous")"
+  [[ -n "${previous:-}" && -d "$previous" && "$previous" != "$(readlink -f "$ROOT/current")" ]] \
+    || die "no previous release to roll back to"
   switch_to "$previous"
   install_units "$previous"
   systemctl --user restart "$SERVICE"
