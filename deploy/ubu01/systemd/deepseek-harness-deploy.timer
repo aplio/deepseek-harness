@@ -1,0 +1,11 @@
+# Installed from deploy/ubu01/systemd by release.sh; edit it in the repository, not in ~/.config.
+[Unit]
+Description=Poll origin/master of the DeepSeek Harness fork for a new release
+
+[Timer]
+OnBootSec=5min
+OnUnitInactiveSec=10min
+RandomizedDelaySec=1min
+
+[Install]
+WantedBy=timers.target

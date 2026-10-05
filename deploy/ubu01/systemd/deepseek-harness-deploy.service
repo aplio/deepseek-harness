@@ -1,0 +1,14 @@
+# Installed from deploy/ubu01/systemd by release.sh; edit it in the repository, not in ~/.config.
+[Unit]
+Description=Release origin/master of the DeepSeek Harness fork when it moves
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+# A stable copy of the current release's release.sh; it hands off to the target commit's own copy.
+ExecStart=%h/deploy/deepseek-harness/bin/release.sh auto
+Environment=PATH=/home/aplio/.nvm/versions/node/v24.13.1/bin:/usr/local/bin:/usr/bin:/bin
+Environment=LANG=C.UTF-8
+Nice=10
+TimeoutStartSec=45min

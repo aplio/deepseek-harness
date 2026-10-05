@@ -1,0 +1,11 @@
+[Unit]
+Description=Proxy public port 3080 to DeepSeek Harness
+Requires=deepseek-harness.service
+After=deepseek-harness.service
+
+[Service]
+ExecStart=/usr/lib/systemd/systemd-socket-proxyd 127.0.0.1:3081
+PrivateTmp=true
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true

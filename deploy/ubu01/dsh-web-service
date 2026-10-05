@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+# Launcher of deepseek-harness.service: serves the Web UI from the release this file belongs to
+# (~/deploy/deepseek-harness/current, see release.sh), never from the editing clone.
+set -euo pipefail
+
+readonly auth_file="${XDG_DATA_HOME:-/home/aplio/.local/share}/opencode/auth.json"
+readonly node_bin="/home/aplio/.nvm/versions/node/v24.13.1/bin/node"
+# The physical release directory: `current` may move to another release while this one runs.
+release_root="$(cd -P "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/../.." && pwd)"
+readonly release_root
+
+if [[ ! -r "$auth_file" ]]; then
+  echo "OpenCode auth file is not readable: $auth_file" >&2
+  exit 1
+fi
+
+OPENCODE_GO_API_KEY="$(/usr/bin/jq -er '."opencode-go".key' "$auth_file")"
+export OPENCODE_GO_API_KEY
+
+# This is an unattended remote Web UI. A stale DISPLAY imported by the user
+# systemd manager would make dsh launch Zenity on the server instead of using
+# its in-app directory browser.
+unset DISPLAY WAYLAND_DISPLAY
+
+# The source launch must start at the repository root: tsx reads the workspace
+# tsconfig path mappings from there, and without them `@deepseek-ai/cordis`
+# resolves to the built lib, which drops the const-enum runtime exports.
+cd "$release_root"
+exec "$node_bin" --import tsx/esm apps/cli/src/bin.ts web \
+  --host 127.0.0.1 \
+  --port 3081 \
+  --trusted-host 100.125.19.55:3080 \
+  --no-open

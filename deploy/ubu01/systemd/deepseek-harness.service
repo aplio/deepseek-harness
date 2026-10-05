@@ -1,0 +1,22 @@
+# Installed from deploy/ubu01/systemd by release.sh; edit it in the repository, not in ~/.config.
+[Unit]
+Description=DeepSeek Harness Web UI
+Documentation=https://deepseek-harness.github.io/deepseek-harness/en/guide/quickstart
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+# `current` is the frozen release (release.sh); the launcher runs from the release it resolves to.
+ExecStart=%h/deploy/deepseek-harness/current/deploy/ubu01/dsh-web-service
+Restart=on-failure
+RestartSec=5s
+TimeoutStopSec=20s
+KillSignal=SIGINT
+SuccessExitStatus=130 SIGINT
+WorkingDirectory=%h/workspace
+Environment=PATH=/home/aplio/.nvm/versions/node/v24.13.1/bin:/usr/local/bin:/usr/bin:/bin
+UMask=0077
+
+[Install]
+WantedBy=default.target
