@@ -132,7 +132,7 @@ export function installDraftKeymap(
       }
       // The chord is the keyboard's only submit gesture, so it resolves the
       // same delivery mode the primary Send button does.
-      keyboard.submit(resolveSubmitMode(g.busyEnter, g.running, g.steeringAvailable))
+      keyboard.submit(resolveSubmitMode(g.busyEnter, g.running, g.steeringAvailable), 'enter')
       dismissTouchKeyboard(editor)
     },
     intakeFiles: (files, directories) => { gate.current.intakeFiles(files, directories) },

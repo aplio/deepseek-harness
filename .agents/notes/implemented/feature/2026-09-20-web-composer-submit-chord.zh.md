@@ -12,7 +12,7 @@ Status: implemented
 
 普通 Enter 与 Shift+Enter 都落到编辑器原生的换行，Cmd/Ctrl+Enter 成为输入框唯一的键盘提交手势。[`registerComposerKeymap`](../../../../packages/client/ui-conversation/src/client/input/editor/keymap.ts) 保留 IME 守卫、菜单仲裁（触发器菜单打开时任何 Enter 仍选中高亮项）与重复抑制；通过这些守卫后，不带 Ctrl/Meta 的 Enter 返回 false，由 `@lexical/plain-text` 插入换行，只有组合键会到达 `handlers.submit()`。由于只有一种键盘手势会到达处理器，`ComposerKeymapHandlers.submit` 不再携带 accelerated 标志。
 
-组合键的投递解析与主发送按钮的点击完全一致：两者都调用 `resolveSubmitMode(busyEnter, running, steeringAvailable)`，因此忙碌态设置同时约束按钮与键盘。该解析不再需要手势参数，`ComposerSubmitGesture` 也随之删除，因为只有一种手势会到达它。空草稿的组合键仍会把所有排队消息转为插话。设置行的描述现在说明按钮与组合键，而不再提 Enter（[决策](../bug-fix/2026-09-04-busy-send-button-follows-enter-setting.zh.md)）。
+组合键的投递解析与主发送按钮的点击完全一致：两者都调用 `resolveSubmitMode(busyEnter, running, steeringAvailable)`，因此忙碌态设置同时约束按钮与键盘。该解析不再需要手势参数，`ComposerSubmitGesture` 也随之删除，因为只有一种手势会到达它。空草稿的组合键仍会把所有排队消息转为插话。设置行的描述现在说明按钮与组合键，而不再提 Enter。
 
 ## 测试
 

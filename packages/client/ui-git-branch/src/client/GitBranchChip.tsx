@@ -4,8 +4,8 @@ import type { ObservableSnapshot } from '@deepseek-ai/dsh-client-store'
 import type { SessionId } from '@deepseek-ai/dsh-session/types'
 import type { WorkspaceGitStatus } from '@deepseek-ai/dsh-api-workspace-git/types'
 import type { InjectFace, PropsLocale, PropsRuntime } from '@deepseek-ai/dsh-client-ui-slots'
-// Type-only: loads the 'conversation.composer.stats.lead' declaration from ui-chat.
-import type {} from '@deepseek-ai/dsh-client-ui-chat/client'
+// Type-only: loads the 'conversation.composer.dock' declaration from ui-conversation.
+import type {} from '@deepseek-ai/dsh-client-ui-conversation/client'
 // Type-only: loads the 'conversation.question.header.lead' declaration from ui-user-questions.
 import type {} from '@deepseek-ai/dsh-client-ui-user-questions/client'
 import { NS } from './locales.ts'
@@ -24,7 +24,7 @@ export interface GitBranchChipInjected {
 
 /** Full props for the composer stats-row git-branch chip. */
 export type GitBranchChipProps =
-  PropsRuntime<'conversation.composer.stats.lead'>
+  PropsRuntime<'conversation.composer.dock'>
   & PropsLocale<typeof NS>
   & InjectFace<GitBranchChipInjected>
 

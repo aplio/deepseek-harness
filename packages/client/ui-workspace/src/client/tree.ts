@@ -43,7 +43,7 @@ function mainSessionId(list: SessionListState): SessionId | undefined {
 /** One top-level session row in a group or the flat list. */
 export interface SessionNode {
   id: SessionId
-  /** Stored display title; the renderer substitutes the localized New Session label for blank rows. */
+  /** Stored title, or empty; the renderer localizes blank and unnamed row labels. */
   title: string
   /**
    * Owning Workspace label, or the Session directory basename when no
@@ -296,10 +296,11 @@ function sectionMembers(
 /**
  * A blank session is the selected Workspace's provisional New Session row;
  * its canonical title never enters search (blank rows are query-excluded)
- * and the renderer localizes its display label.
+ * and the renderer localizes its display label. Unnamed history also yields an
+ * empty title for localization and does not match a directory-name title search.
  */
 function sessionTitle(session: SessionSummary): string {
-  return session.blank ? '' : session.displayTitle
+  return session.blank ? '' : (session.title?.trim() ?? '')
 }
 
 /** Build one group without projecting session lineage into presentation. */

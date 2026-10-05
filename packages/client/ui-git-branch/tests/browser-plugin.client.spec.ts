@@ -42,14 +42,6 @@ async function bench(): Promise<{ ctx: Context; fiber: ReturnType<Context['plugi
       'sidebar.brand.status': { kind: 'single', scope: 'root' },
     },
   } as never, () => null)
-  // The stats row owns one seat; the root stands in for the question card's declaration.
-  ctx.slots.register({
-    name: 'conversation.composer.dock',
-    id: 'stats',
-    children: {
-      'conversation.composer.stats.lead': { kind: 'list', scope: 'session' },
-    },
-  } as never, () => null)
   ctx.provide('locale', new LocaleRuntime(ctx))
   const remote = { workspaceGit: { status, upstream } }
   ctx.provide('remote', remote as never)
@@ -60,7 +52,7 @@ async function bench(): Promise<{ ctx: Context; fiber: ReturnType<Context['plugi
 }
 
 function seatEntryIds(ctx: Context): (string | undefined)[] {
-  return ctx.slots.entries('conversation.composer.stats.lead').map(entry => entry.options.id)
+  return ctx.slots.entries('conversation.composer.dock').map(entry => entry.options.id)
 }
 
 describe('ui-git-branch browser half', () => {
@@ -70,9 +62,9 @@ describe('ui-git-branch browser half', () => {
 
   it('registers one chip in each lead seat and the brand-row badge, and fiber teardown removes all three (HMR safety)', async () => {
     const { ctx, fiber } = await bench()
-    const stats = ctx.slots.entries('conversation.composer.stats.lead')[0]
+    const stats = ctx.slots.entries('conversation.composer.dock')[0]
     expect(stats?.component).toBe(GitBranchChip)
-    expect(stats?.options).toMatchObject({ id: 'git-branch', order: 0 })
+    expect(stats?.options).toMatchObject({ id: 'git-branch', order: -1 })
     const header = ctx.slots.entries('conversation.question.header.lead')[0]
     expect(header?.component).toBe(GitBranchChip)
     expect(header?.options).toMatchObject({ id: 'git-branch', order: 0 })
@@ -85,7 +77,7 @@ describe('ui-git-branch browser half', () => {
 
   it('injects the checkout snapshot and the acquire/release verbs', async () => {
     const { ctx, fiber, status } = await bench()
-    const entry = ctx.slots.entries('conversation.composer.stats.lead')[0]
+    const entry = ctx.slots.entries('conversation.composer.dock')[0]
     const injected = (entry?.inject as unknown as () => GitBranchChipInjected)()
     injected.acquire(SESSION)
     await vi.waitFor(() => {

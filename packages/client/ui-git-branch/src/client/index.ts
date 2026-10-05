@@ -1,9 +1,9 @@
 /**
- * Git-branch chip plugin, browser half: the lead occupant of the composer's
- * session-stats row and of the question card's header, showing the checkout
- * the current Session workspace lives in, plus the sidebar brand-row badge
- * reporting whether the checkout serving this process is behind its fork
- * origin. The Host answers both through the `workspaceGit` Remote namespace;
+ * Git-branch chip plugin, browser half: the leading entry of the composer
+ * dock (ahead of ui-chat's stats pills) and of the question card's header,
+ * showing the checkout the current Session workspace lives in, plus the
+ * sidebar brand-row badge reporting whether the checkout serving this process
+ * is behind its fork origin. The Host answers both through the `workspaceGit` Remote namespace;
  * this plugin owns the polling caches and the presentations.
  */
 
@@ -32,7 +32,7 @@ export const inject = ['slots', 'locale', 'remote', 'remote.workspaceGit']
 
 /**
  * Client plugin body: register the dictionaries, both checkout controllers,
- * and the three seats — the chip's two lead seats and the sidebar brand row's
+ * and the three seats — the chip's dock entry and question-header seat and the sidebar brand row's
  * update notice.
  * @param ctx - client root context.
  */
@@ -47,12 +47,12 @@ export function apply(ctx: ClientContext): void {
     acquire: (sessionId) => { controller.acquire(sessionId) },
     release: (sessionId) => { controller.release(sessionId) },
   })
-  // ui-chat's stats row renders this seat ahead of its figures, so the chip
-  // reads with the stats it shares the line with.
-  ctx.slots.inject('conversation.composer.stats.lead', () => ctx.slots.register({
-    name: 'conversation.composer.stats.lead',
+  // The composer dock lays its entries out as one row; ui-chat's stats pills
+  // take orders 0 and up, so the chip leads the line it shares with them.
+  ctx.slots.inject('conversation.composer.dock', () => ctx.slots.register({
+    name: 'conversation.composer.dock',
     id: 'git-branch',
-    order: 0,
+    order: -1,
     locale: NS,
     inject: chipInjected,
   }, GitBranchChip))
