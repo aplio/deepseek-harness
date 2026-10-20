@@ -18,11 +18,12 @@
   - text: Font size Only affects conversation content 14
   - button "Increase font size"
   - button "Decrease font size"
-  - text: px Font Applies to UI text and code; leave empty for the browser default
-  - textbox "Font":
-    - /placeholder: e.g. "Hiragino Sans", "Noto Sans JP"
+  - text: px
+  - button "More font settings"
   - text: Work details Choose how much detail to show for tool calls
   - button "Detailed"
+  - text: When to Collapse Work Details Choose when to automatically collapse work details
+  - button "On completion"
   - text: Show coding view Shows trajectory, code diffs, and all Agent presets
   - switch "Show coding view"
   - text: Keyboard shortcuts

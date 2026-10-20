@@ -18,6 +18,12 @@ The plugin registers the Font row into the General settings section: a free-form
 
 New `settings.font` copy (`fontFamily.title`, `fontFamily.description`, `fontFamily.placeholder`) ships in the plugin's zh/en dictionaries and in the pack's Japanese dictionary.
 
+## Upstream font settings supersession
+
+The 0.2.1-rc.2 upstream sync retired `packages/client/ui-font-family`. Upstream now ships font settings in `ui-theme` — a text-size row whose disclosure holds independent text, code, and terminal font-family rows plus code and terminal size rows — persisted in the theme settings namespace and bootstrapped before the first paint. Two font surfaces would have fought over `--dsw-font-family`, because the plugin wrote it inline on the body and shadowed the theme's derived value, so the fork dropped the plugin, its General-settings row, and its bundle entry. Deployments still choose a family through the theme font rows, and the pack's `settings.theme` dictionary carries the Japanese copy for them.
+
+The fork keeps one theme change upstream does not make: `ui-theme/src/styles/base.css` defines locale-neutral default stacks, so a `ja` page takes Japanese glyph forms without pinning a family first. A deployment that wants a specific family still sets it through the theme font rows.
+
 ## Alternatives considered
 
 - **First-class `ja` in `LOCALE_IDS`.** The typed `register(ns, { zh, en, ja })` form would force a Japanese dictionary into every package's registration and make every upstream string change a conflict surface in this fork. Language packs are the documented mechanism for languages outside the shipped pair; rejected.

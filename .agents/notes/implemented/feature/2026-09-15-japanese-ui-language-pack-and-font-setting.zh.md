@@ -18,6 +18,12 @@ Web 客户端只提供中文与英文，语言选择器没有第三项。内置�
 
 新增的 `settings.font` 文案（`fontFamily.title`、`fontFamily.description`、`fontFamily.placeholder`）随插件的 zh/en 词典与语言包的日语词典一同发布。
 
+## Upstream font settings supersession
+
+0.2.1-rc.2 的上游同步移除了 `packages/client/ui-font-family`。上游现在在 `ui-theme` 中提供字体设置——一个文字字号行，其展开区包含独立的正文、代码与终端字体族行以及代码与终端字号行——持久化在主题设置命名空间并在首帧前引导。两个字体入口会争夺 `--dsw-font-family`：插件以 inline 方式写在 body 上，会遮住主题派生的值，因此本分支删除了插件、它的通用设置行与 bundle 条目。部署仍可通过主题字体设置行指定字体族，语言包的 `settings.theme` 词典为这些行提供日语文案。
+
+本分支保留一处上游没有的主题改动：`ui-theme/src/styles/base.css` 定义 locale 中立的默认字体栈，因此 `ja` 页面无需先固定字体族就能使用日文字形。需要特定字体族的部署仍可通过主题字体设置行指定。
+
 ## Alternatives considered
 
 - **把 `ja` 作为 `LOCALE_IDS` 的一等成员。** 类型化的 `register(ns, { zh, en, ja })` 形式会强制每个包的注册都提供日语词典，并让上游每次字符串变更都成为本分支的冲突面。语言包是内置语言对之外语言的规定机制；已否决。

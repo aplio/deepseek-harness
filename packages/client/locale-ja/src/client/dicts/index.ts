@@ -27,7 +27,6 @@ import { ja as scheduleCatalog } from './schedule-catalog.ts'
 import { ja as sessionLogDownload } from './session-log-download.ts'
 import { ja as settings } from './settings.ts'
 import { ja as settingsAgentPreset } from './settings-agent-preset.ts'
-import { ja as settingsFont } from './settings-font.ts'
 import { ja as settingsLocale } from './settings-locale.ts'
 import { ja as settingsModels } from './settings-models.ts'
 import { ja as settingsPermission } from './settings-permission.ts'
@@ -75,7 +74,6 @@ export const DICTIONARIES: readonly { ns: string; dict: Record<string, string> }
   { ns: 'session-log-download', dict: sessionLogDownload },
   { ns: 'settings', dict: settings },
   { ns: 'settings.agentPreset', dict: settingsAgentPreset },
-  { ns: 'settings.font', dict: settingsFont },
   { ns: 'settings.locale', dict: settingsLocale },
   { ns: 'settings.models', dict: settingsModels },
   { ns: 'settings.permission', dict: settingsPermission },

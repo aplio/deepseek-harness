@@ -42,9 +42,6 @@
       "path": "../ui-git-branch"
     },
     {
-      "path": "../ui-font-family/tsconfig.client.json"
-    },
-    {
       "path": "../ui-goal"
     },
     {

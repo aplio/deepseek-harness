@@ -25,7 +25,7 @@ describe('locale-ja apply', () => {
     locale.setLocale('ja')
     expect(locale.bind('common')('cancel')).toBe('キャンセル')
     expect(locale.bind('settings.locale')('language.title')).toBe('言語')
-    expect(locale.bind('settings.font')('fontFamily.title')).toBe('フォント')
+    expect(locale.bind('settings.theme')('fontFamily.text.title')).toBe('本文フォント')
   })
 
   it('falls back to English for a namespace the pack does not carry', async () => {
