@@ -26,9 +26,13 @@ unset DISPLAY WAYLAND_DISPLAY
 # tsconfig path mappings from there, and without them `@deepseek-ai/cordis`
 # resolves to the built lib, which drops the const-enum runtime exports.
 cd "$release_root"
+# Browsers reach this over the tailnet: plain HTTP on :3080 (socket proxy) and
+# HTTPS on :443 via `tailscale serve --https=443 http://127.0.0.1:3081`. The
+# port-less MagicDNS entry admits both; --public-url only sets the printed URL.
 exec "$node_bin" --import tsx/esm apps/cli/src/bin.ts web \
   --host 127.0.0.1 \
   --port 3081 \
   --trusted-host 100.125.19.55:3080 \
-  --trusted-host ubu01.tail4485a4.ts.net:3080 \
+  --public-url https://ubu01.tail4485a4.ts.net/ \
+  --trusted-host ubu01.tail4485a4.ts.net \
   --no-open
