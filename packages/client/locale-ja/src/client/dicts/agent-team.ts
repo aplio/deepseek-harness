@@ -1,6 +1,6 @@
-/** Japanese dictionary for the `agent-team` namespace (experimental/client-ui-agent-team/src/client/locales.ts). */
-// Type-only: loads the `agent-team` key union declared by @deepseek-ai/dsh-experimental-client-ui-agent-team.
-import type {} from '@deepseek-ai/dsh-experimental-client-ui-agent-team/client'
+/** Japanese dictionary for the `agent-team` namespace (client/ui-agent-team/src/client/locales.ts). */
+// Type-only: loads the `agent-team` key union declared by @deepseek-ai/dsh-client-ui-agent-team.
+import type {} from '@deepseek-ai/dsh-client-ui-agent-team/client'
 
 /** `agent-team` copy in Japanese, keys absent here fall back to English. */
 export const ja: Record<string, string> = {

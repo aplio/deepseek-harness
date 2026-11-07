@@ -1,7 +1,7 @@
 {
   "name": "@deepseek-ai/dsh-client-locale-ja",
   "description": "Japanese (ja) language pack for the web GUI: registers the ja locale and its dictionaries over the shipped zh/en registry",
-  "version": "0.2.1-rc.2",
+  "version": "0.2.2-rc.1",
   "publishConfig": {
     "access": "public"
   },
@@ -51,6 +51,7 @@
     "@deepseek-ai/dsh-client-locale": "workspace:*",
     "@deepseek-ai/dsh-client-test-runtime": "workspace:*",
     "@deepseek-ai/dsh-client-ui-agent-preset": "workspace:*",
+    "@deepseek-ai/dsh-client-ui-agent-team": "workspace:*",
     "@deepseek-ai/dsh-client-ui-approval": "workspace:*",
     "@deepseek-ai/dsh-client-ui-chat": "workspace:*",
     "@deepseek-ai/dsh-client-ui-commands": "workspace:*",
@@ -84,7 +85,6 @@
     "@deepseek-ai/dsh-client-ui-user-questions": "workspace:*",
     "@deepseek-ai/dsh-client-ui-workflow-run": "workspace:*",
     "@deepseek-ai/dsh-client-ui-workspace": "workspace:*",
-    "@deepseek-ai/dsh-experimental-client-ui-agent-team": "workspace:*",
     "@deepseek-ai/dsh-session-log-export": "workspace:*"
   }
 }
