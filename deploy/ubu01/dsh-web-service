@@ -30,4 +30,5 @@ exec "$node_bin" --import tsx/esm apps/cli/src/bin.ts web \
   --host 127.0.0.1 \
   --port 3081 \
   --trusted-host 100.125.19.55:3080 \
+  --trusted-host ubu01.tail4485a4.ts.net:3080 \
   --no-open
