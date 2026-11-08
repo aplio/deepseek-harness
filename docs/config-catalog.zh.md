@@ -1983,7 +1983,7 @@ export interface Config extends ProtocolConfig, ModelListingConfig {
 
 - `inject`: `llm`
 - `refs`: `Api` (`@earendil-works/pi-ai`) · `CacheRetention` (`@earendil-works/pi-ai`) · `Model` (`@earendil-works/pi-ai`) · `ModelThinkingLevel` (`@earendil-works/pi-ai`) · `OpenAICompletionsCompat` (`@earendil-works/pi-ai`) · [`RetryPolicyConfig`](../packages/llm/llm/src/index.ts) · `ThinkingBudgets` (`@earendil-works/pi-ai`) · `Transport` (`@earendil-works/pi-ai`) · `Volatile` (`@deepseek-ai/cordis`)
-- `source`: [`packages/llm/llm-pi-ai/src/config.ts:251`](../packages/llm/llm-pi-ai/src/config.ts)
+- `source`: [`packages/llm/llm-pi-ai/src/config.ts:257`](../packages/llm/llm-pi-ai/src/config.ts)
 
 ```ts config-catalog
 /** Plugin configuration: the provider routes this instance owns. */
@@ -2139,6 +2139,13 @@ export interface PiAiModelProfile {
   reasoningEfforts?: false | PiAiReasoningEfforts
   /** pi-ai wire-compatibility switches for this model, winning over the route's per field; one its protocol does not declare is refused. */
   compat?: PiAiCompatProfile
+  /**
+   * Destinations the model's published peak window routes to, in priority
+   * order. The period belongs to the model's price policy and ships with the
+   * catalog, so configuration names only where requests go meanwhile. An empty
+   * list is the same as omitting the field.
+   */
+  peak?: PiAiPeakProvider[]
 }
 
 /**
@@ -2254,6 +2261,32 @@ export type PiAiModality = Model<Api>['input'][number]
  * from the dict is not offered.
  */
 export type PiAiReasoningEfforts = Partial<Record<ModelThinkingLevel, string | null>>
+
+/** One provider a peak window may serve a model with. */
+export interface PiAiPeakProvider {
+  /**
+   * Provider route that serves the window's requests. A route the installed
+   * pi-ai catalog describes runs inside this adapter, with or without a profile
+   * of its own; any other one is executed by the route the deployment
+   * registers under this id.
+   */
+  provider: string
+  /**
+   * Model id the candidate receives. Omission keeps the routed model's own id,
+   * so a window that only moves the endpoint names no model. A window may route
+   * to another model of the same provider, or to a model of another one.
+   */
+  model?: string
+  /**
+   * Credential reference (environment-variable name) resolved per request
+   * through the credential seam, for a destination resolved from the installed
+   * catalog. Omission uses the candidate route's own `apiKeyEnv` when the
+   * candidate is a configured route, and otherwise defers to pi-ai's
+   * provider-native ambient discovery. A destination that executes on its own
+   * registered route authenticates through that route and refuses this field.
+   */
+  apiKeyEnv?: string
+}
 
 /** One reasoning-dispatch wire format a profile may name. */
 export type PiAiThinkingFormat = NonNullable<OpenAICompletionsCompat['thinkingFormat']>
@@ -4793,6 +4826,24 @@ export interface Config {
 ```
 <!-- END GENERATED config-catalog:@deepseek-ai/dsh-web-fetch-http -->
 
+<!-- BEGIN GENERATED config-catalog:@deepseek-ai/dsh-web-ollama-api -->
+<a id="deepseek-aidsh-web-ollama-api"></a>
+
+## `@deepseek-ai/dsh-web-ollama-api`
+
+- `inject`: `web`
+- `refs`: `Volatile` (`@deepseek-ai/cordis`)
+- `source`: [`packages/web/web-ollama-api/src/index.ts:40`](../packages/web/web-ollama-api/src/index.ts)
+
+```ts config-catalog
+/** Live plugin config: the one value a deployment varies, editable from the settings page. */
+export interface Config {
+  /** Default result count when a search request carries no `maxResults`. Defaults to 5. */
+  maxResults: Volatile<number>
+}
+```
+<!-- END GENERATED config-catalog:@deepseek-ai/dsh-web-ollama-api -->
+
 <!-- BEGIN GENERATED config-catalog:@deepseek-ai/dsh-web-search-deepseek -->
 <a id="deepseek-aidsh-web-search-deepseek"></a>
 
@@ -4979,6 +5030,7 @@ export interface Config {
 | `@deepseek-ai/dsh-client-ui-settings-shell` | — | [`packages/client/ui-settings-shell/src/index.ts`](../packages/client/ui-settings-shell/src/index.ts) |
 | `@deepseek-ai/dsh-client-ui-settings-subagent` | — | [`packages/client/ui-settings-subagent/src/index.ts`](../packages/client/ui-settings-subagent/src/index.ts) |
 | `@deepseek-ai/dsh-client-ui-settings-web-search` | — | [`packages/client/ui-settings-web-search/src/index.ts`](../packages/client/ui-settings-web-search/src/index.ts) |
+| `@deepseek-ai/dsh-client-ui-settings-web-search-ollama` | — | [`packages/client/ui-settings-web-search-ollama/src/index.ts`](../packages/client/ui-settings-web-search-ollama/src/index.ts) |
 | `@deepseek-ai/dsh-client-ui-shortcuts` | — | [`packages/client/ui-shortcuts/src/index.ts`](../packages/client/ui-shortcuts/src/index.ts) |
 | `@deepseek-ai/dsh-client-ui-sidebar` | — | [`packages/client/ui-sidebar/src/index.ts`](../packages/client/ui-sidebar/src/index.ts) |
 | `@deepseek-ai/dsh-client-ui-sidebar-browser` | — | [`packages/client/ui-sidebar-browser/src/index.ts`](../packages/client/ui-sidebar-browser/src/index.ts) |
